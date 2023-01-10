@@ -153,19 +153,7 @@ QTextEdit {
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QLabel" name="lbl_contact">
-            <property name="font">
-             <font>
-              <family>Calibri</family>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Business Contact</string>
-            </property>
-           </widget>
-          </item>
+          
           <item>
            <widget class="QLabel" name="lbl_username">
             <property name="font">
@@ -176,6 +164,19 @@ QTextEdit {
             </property>
             <property name="text">
              <string>Business Address</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_contact">
+            <property name="font">
+             <font>
+              <family>Calibri</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Business Contact</string>
             </property>
            </widget>
           </item>
@@ -205,7 +206,7 @@ QTextEdit {
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QLineEdit" name="txt_name">
+           <widget class="QLineEdit" name="txt_business_name">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -227,7 +228,7 @@ QTextEdit {
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txt_email">
+           <widget class="QLineEdit" name="txt_business_email">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -249,7 +250,7 @@ QTextEdit {
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txt_contact">
+           <widget class="QLineEdit" name="txt_business_address">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -271,7 +272,7 @@ QTextEdit {
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txt_username">
+           <widget class="QLineEdit" name="txt_business_contact">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -293,7 +294,7 @@ QTextEdit {
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txt_password">
+           <widget class="QLineEdit" name="txt_business_owner">
             <property name="minimumSize">
              <size>
               <width>0</width>

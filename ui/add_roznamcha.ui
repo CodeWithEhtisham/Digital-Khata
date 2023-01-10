@@ -360,6 +360,7 @@ QTextEdit {
               <string>Cash In</string>
              </property>
             </item>
+            
             <item>
              <property name="text">
               <string>Cash Out</string>
