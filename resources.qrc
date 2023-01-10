@@ -1,0 +1,25 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>assets/icons/print.png</file>
+    <file>assets/icons/clear.png</file>
+    <file>assets/icons/close.png</file>
+    <file>assets/icons/create_user.png</file>
+    <file>assets/icons/customers_blue.png</file>
+    <file>assets/icons/edit.png</file>
+    <file>assets/icons/home.png</file>
+    <file>assets/icons/icon.png</file>
+    <file>assets/icons/icon-48.png</file>
+    <file>assets/icons/logo.png</file>
+    <file>assets/icons/logout.png</file>
+    <file>assets/icons/menu.png</file>
+    <file>assets/icons/plus.png</file>
+    <file>assets/icons/product.png</file>
+    <file>assets/icons/refresh.png</file>
+    <file>assets/icons/reports.png</file>
+    <file>assets/icons/sales.png</file>
+    <file>assets/icons/save.png</file>
+    <file>assets/icons/search.png</file>
+    <file>assets/icons/settings.png</file>
+    <file>assets/icons/user.png</file>
+  </qresource>
+</RCC>

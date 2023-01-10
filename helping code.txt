@@ -1,0 +1,33 @@
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
+
+    def print_file(self):
+        printer = QPrinter(QPrinter.HighResolution)
+        dialog = QPrintDialog(printer, self)
+
+        if dialog.exec_() = QPrintDialog.Accespted:
+
+, clicked = lambda: self.openBalanceWindow()
+
+from add_customer import Ui_CustomerWindow
+from add_balance import Ui_BalanceWindow
+from sales_terminal import Ui_SalesTerminalWindow
+
+class Ui_MainWindow(object):
+    def openCustomerWindow(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_CustomerWindow()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+    def openBalanceWindow(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_BalanceWindow()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+    def openSalesTerminalWindow(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_SalesTerminalWindow()
+        self.ui.setupUi(self.window)
+        self.window.show()
