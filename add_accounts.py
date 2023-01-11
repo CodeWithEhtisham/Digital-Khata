@@ -46,7 +46,7 @@ class AddAccountsWindow(QMainWindow, FORM_MAIN):
                     columns="name, phone, address, balance_type, balance,khata_id",
                     values=f"'{name}', '{phone}', '{address}', '{balance_type}', '{balance}', '{self.khata_id}'"
                 )
-                self.db.conn.execute(f"INSERT INTO account_details (account_id, date,description,remaining) VALUES ('{ self.db.cursor.lastrowid }', '{QDate.currentDate().toString('dd/MM/yyyy')}', '{balance_type}', '{balance}')")
+                # self.db.conn.execute(f"INSERT INTO account_details (account_id, date,description,remaining) VALUES ('{ self.db.cursor.lastrowid }', '{QDate.currentDate().toString('dd/MM/yyyy')}', '{balance_type}', '{balance}')")
                 self.db.conn.commit()
                 QMessageBox.information(self, 'Success', 'Account added successfully')
                 self.close()

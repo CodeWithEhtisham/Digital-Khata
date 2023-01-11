@@ -15,6 +15,7 @@ from add_roznamcha import RozNamchaWindow
 from account_details import AccountDetailsWindow
 from add_accounts import AddAccountsWindow
 from khata_details import KhataWindow
+from update_roznamcha import UpdateRozNamchaWindow
 # from cash_paid import CashPaidWindow
 from PyQt5.uic import loadUiType
 from resources_rc import *
@@ -66,7 +67,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
         # tables double clicked
         self.accounts_table.doubleClicked.connect(self.account_details)
-        
+        self.roznamcha_table.doubleClicked.connect(self.roznamcha_update)
 
         # business btns
         self.btn_business_details.clicked.connect(self.business_details)
@@ -84,6 +85,15 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.btn_refresh_RN.clicked.connect(self.update)
         self.btn_refresh_accounts.clicked.connect(self.update)
         self.txt_search.textChanged.connect(self.search_accounts)
+
+    def roznamcha_update(self):
+        row_id = self.roznamcha_table.currentRow()
+        id = self.roznamcha_table.item(row_id, 0).text()
+        self.update_roznamcha = UpdateRozNamchaWindow(id)
+        self.update_roznamcha.show()
+        self.update_roznamcha.btn_update.clicked.connect(self.update)
+        self.update_roznamcha.btn_clear.clicked.connect(self.update)
+
 
     def print_roznamcha_table_pdf(self):
         filename = QFileDialog.getSaveFileName(
@@ -248,6 +258,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.lbl_total_cash_out.setStyleSheet("color: red")
 
     def update(self):
+        print("close call roznamcaha")
         data = self.db.select(table_name='business',
                               columns="*", condition="id=1")
         if data:
@@ -365,36 +376,17 @@ class MainWindow(QMainWindow, FORM_MAIN):
             if khata_id:
                 self.add_accounts = AddAccountsWindow(khata_id=khata_id)
                 self.add_accounts.show()
+                self.add_accounts.btn_save.clicked.connect(self.update)
+                self.add_accounts.btn_clear.clicked.connect(self.update)
+                self.add_accounts.btn_cancel.clicked.connect(self.update)
+
             else:
                 QMessageBox.warning(
                     self, "warning", f"Please Select Khata {e}")
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Please Select Khata {e}")
 
-    # def search_roznamcha_by_date(self):
-    #     from_date=self.txt_date_from_rn.date().toString("dd/MM/yyyy")
-    #     to_date=self.txt_date_to_rn.date().toString("dd/MM/yyyy")
-    #     db=DBHandler()
-    #     data=db.conn.execute(f"SELECT date,products.product_name,quantity,rate,total_amount,customers.name,cash_paid,cash_received FROM roznamcha LEFT JOIN customers ON roznamcha.customer_id=customers.custmer_id LEFT JOIN products ON roznamcha.product_id=products.product_id WHERE roznamcha.date BETWEEN '{from_date}' AND '{to_date}'").fetchall()
-    #     self.roznamcha_table.setRowCount(0)
-    #     for index,row in enumerate(data):
-    #             self.roznamcha_table.insertRow(index)
-    #             for idx,i in enumerate(row):
-    #                 self.roznamcha_table.setItem(index,idx,QTableWidgetItem(str(i)))
 
-    # def search_roznamcha_by_name(self):
-    #     option=self.search_option_rn.currentText()
-    #     if option=="Select Option":
-    #         QMessageBox.warning(self,"Error","Please Select Search Option")
-    #     else:
-    #         value=self.txt_search_rn.text()
-    #         db=DBHandler()
-    #         data=db.conn.execute(f"SELECT date,products.product_name,quantity,rate,total_amount,customers.name,cash_paid,cash_received FROM roznamcha LEFT JOIN customers ON roznamcha.customer_id=customers.custmer_id LEFT JOIN products ON roznamcha.product_id=products.product_id Where customers.name LIKE '%{value}%'").fetchall()
-    #         self.roznamcha_table.setRowCount(0)
-    #         for index,row in enumerate(data):
-    #             self.roznamcha_table.insertRow(index)
-    #             for idx,i in enumerate(row):
-    #                 self.roznamcha_table.setItem(index,idx,QTableWidgetItem(str(i)))
 
     def add_khata(self):
         self.window = KhataWindow()
@@ -406,6 +398,11 @@ class MainWindow(QMainWindow, FORM_MAIN):
             if khata_id:
                 self.roznamcha_window = RozNamchaWindow(khata_id=khata_id)
                 self.roznamcha_window.show()
+                # update main ui when roznamcha window is closed
+                self.roznamcha_window.btn_save.clicked.connect(self.update)
+                self.roznamcha_window.btn_cancel.clicked.connect(self.update)
+                self.roznamcha_window.btn_clear.clicked.connect(self.update)
+                
             else:
                 QMessageBox.warning(
                     self, "warning", f"Please Select Khata {e}")
