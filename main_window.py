@@ -16,6 +16,7 @@ from account_details import AccountDetailsWindow
 from add_accounts import AddAccountsWindow
 from khata_details import KhataWindow
 from update_roznamcha import UpdateRozNamchaWindow
+from update_accounts import UpdateAccountsWindow
 # from cash_paid import CashPaidWindow
 from PyQt5.uic import loadUiType
 from resources_rc import *
@@ -68,6 +69,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
         # tables double clicked
         self.accounts_table.doubleClicked.connect(self.account_details)
         self.roznamcha_table.doubleClicked.connect(self.roznamcha_update)
+        self.btn_edit_accounts.clicked.connect(self.update_account)
 
         # business btns
         self.btn_business_details.clicked.connect(self.business_details)
@@ -85,6 +87,15 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.btn_refresh_RN.clicked.connect(self.update)
         self.btn_refresh_accounts.clicked.connect(self.update)
         self.txt_search.textChanged.connect(self.search_accounts)
+
+    def update_account(self):
+        id = self.accounts_table.item(
+            self.accounts_table.currentRow(), 0).text()
+        self.window_update= UpdateAccountsWindow(id)
+        self.window_update.show()
+        self.window_update.btn_save.clicked.connect(self.update)
+        # self.window = AccountDetailsWindow(id, name)
+        # self.window.show()
 
     def roznamcha_update(self):
         row_id = self.roznamcha_table.currentRow()
@@ -391,6 +402,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
     def add_khata(self):
         self.window = KhataWindow()
         self.window.show()
+        self.window.btn_save.clicked.connect(self.khata_select_update)
 
     def add_roznamcha(self):
         try:

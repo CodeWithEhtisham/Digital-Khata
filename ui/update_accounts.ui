@@ -294,7 +294,7 @@ QLineEdit, QComboBox {
          </property>
         </widget>
        </item>
-       <item>
+       <!-- <item>
         <widget class="QPushButton" name="btn_clear">
          <property name="font">
           <font>
@@ -318,7 +318,7 @@ QLineEdit, QComboBox {
           </size>
          </property>
         </widget>
-       </item>
+       </item> -->
        <item>
         <widget class="QPushButton" name="btn_cancel">
          <property name="font">
