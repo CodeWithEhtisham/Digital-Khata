@@ -71,6 +71,8 @@ class MainWindow(QMainWindow, FORM_MAIN):
             data = self.db.select(table_name='accounts', columns="accounts_id,name,phone,address,balance", condition=f"khata_id={self.get_khata_id(self.khata_options.currentText())}")
             if data:
                 self.update_table(data=data,obj=self.accounts_table)
+            else:
+                self.accounts_table.setRowCount(0)
         else:
             self.accounts_table.setRowCount(0)
 

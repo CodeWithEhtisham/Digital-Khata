@@ -53,7 +53,7 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
             try:    
                 acccount_id=self.db.select(
                     table_name="accounts",
-                    columns="account_id",
+                    columns="accounts_id",
                     condition=f"name='{name}' and khata_id={self.khata_id}"
                 )[0][0]
                 if cash_type=="Cash In":
