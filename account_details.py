@@ -22,6 +22,11 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         self.account_id = id
         self.db= DBHandler()
         self.update(self.account_id)
+        self.account_details_table.setColumnWidth(0, 50)
+        self.account_details_table.setColumnWidth(1, 120)
+        self.account_details_table.setColumnWidth(2, 200)
+        self.account_details_table.setColumnWidth(3, 200)
+        self.account_details_table.setColumnWidth(6, 100)
 
     def update(self,id):
         data= self.db.conn.execute(
