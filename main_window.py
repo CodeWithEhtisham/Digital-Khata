@@ -31,6 +31,20 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.khata_select_update()
         # home page show when window open on load
         self.Handle_Buttons()
+        
+        # Set column width for specific column
+        self.accounts_table.setColumnWidth(0, 50)
+        self.accounts_table.setColumnWidth(1, 300)
+        self.accounts_table.setColumnWidth(2, 200)
+        self.accounts_table.setColumnWidth(3, 300)
+        self.accounts_table.setColumnWidth(4, 200)
+        
+        self.roznamcha_table.setColumnWidth(0, 50)
+        self.roznamcha_table.setColumnWidth(1, 120)
+        self.roznamcha_table.setColumnWidth(2, 130)
+        self.roznamcha_table.setColumnWidth(3, 250)
+        self.roznamcha_table.setColumnWidth(6, 170)
+        self.roznamcha_table.setColumnWidth(7, 170)
     
     def Handle_Buttons(self):
         self.btn_home.clicked.connect(self.home)
