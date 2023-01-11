@@ -69,11 +69,10 @@ class MainWindow(QMainWindow, FORM_MAIN):
         
         if self.khata_options.currentText()!="Select Khata":
             data = self.db.select(table_name='accounts', columns="accounts_id,name,phone,address,balance", condition=f"khata_id={self.get_khata_id(self.khata_options.currentText())}")
-            print(data)
             if data:
                 self.update_table(data=data,obj=self.accounts_table)
-            else:
-                self.accounts_table.setRowCount(0)
+        else:
+            self.accounts_table.setRowCount(0)
 
     def account_details(self):
         # get selected row first cell
@@ -102,6 +101,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
         else:
             self.khata_select_update()
+            self.update()
             
     def get_khata_id(self,name):
         if name!="Select Khata":
@@ -114,6 +114,8 @@ class MainWindow(QMainWindow, FORM_MAIN):
             if khata_id:
                 self.add_accounts = AddAccountsWindow(khata_id=khata_id)
                 self.add_accounts.show()
+            else:
+                QMessageBox.warning(self,"warning",f"Please Select Khata {e}")
         except Exception as e:
             QMessageBox.warning(self,"Error",f"Please Select Khata {e}")
 
@@ -151,8 +153,16 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.window.show()
 
     def add_roznamcha(self):
-        self.roznamcha_window=RozNamchaWindow()
-        self.roznamcha_window.show()
+        try:
+            khata_id=self.get_khata_id(self.khata_options.currentText())
+            if khata_id:
+                self.roznamcha_window=RozNamchaWindow(khata_id=khata_id)
+                self.roznamcha_window.show()
+            else:
+                QMessageBox.warning(self,"warning",f"Please Select Khata {e}")
+        except Exception as e:
+            QMessageBox.warning(self,"Error",f"Please Select Khata {e}")
+        
 
 
         

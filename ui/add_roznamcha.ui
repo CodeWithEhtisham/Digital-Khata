@@ -313,11 +313,7 @@ QTextEdit {
               <pointsize>14</pointsize>
              </font>
             </property>
-            <item>
-             <property name="text">
-              <string>Select Option</string>
-             </property>
-            </item>
+            
             <item>
              <property name="text">
               <string>Cash In</string>
@@ -355,7 +351,7 @@ QTextEdit {
               <string>Select Option</string>
              </property>
             </item>
-            <item>
+            <!-- <item>
              <property name="text">
               <string>Cash In</string>
              </property>
@@ -365,7 +361,7 @@ QTextEdit {
              <property name="text">
               <string>Cash Out</string>
              </property>
-            </item>
+            </item> -->
            </widget>
           </item>
           <item>
@@ -391,7 +387,7 @@ QTextEdit {
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="txt_description">
+           <widget class="QLineEdit" name="txt_description">
             <property name="minimumSize">
              <size>
               <width>0</width>
