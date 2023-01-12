@@ -14,7 +14,7 @@
    <string>SAM Digital Khata</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="../resources.qrc">
     <normaloff>:/icons/assets/icons/logo.png</normaloff>:/icons/assets/icons/logo.png</iconset>
   </property>
   <property name="iconSize">
@@ -143,7 +143,7 @@
           <string>Home</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/home.png</normaloff>:/icons/assets/icons/home.png</iconset>
          </property>
          <property name="iconSize">
@@ -186,7 +186,7 @@
           <string>Accounts</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/customers_blue.png</normaloff>:/icons/assets/icons/customers_blue.png</iconset>
          </property>
          <property name="iconSize">
@@ -226,7 +226,7 @@
           <string>Roz Namcha</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/sales.png</normaloff>:/icons/assets/icons/sales.png</iconset>
          </property>
          <property name="iconSize">
@@ -266,7 +266,7 @@
           <string>Settings</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/settings.png</normaloff>:/icons/assets/icons/settings.png</iconset>
          </property>
          <property name="iconSize">
@@ -396,7 +396,7 @@
           <string>Logout</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/logout.png</normaloff>:/icons/assets/icons/logout.png</iconset>
          </property>
          <property name="iconSize">
@@ -773,7 +773,7 @@
               <string>Add Accounts</string>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/plus.png</normaloff>:/icons/assets/icons/plus.png</iconset>
              </property>
              <property name="iconSize">
@@ -784,7 +784,7 @@
              </property>
             </widget>
            </item>
-           <item alignment="Qt::AlignLeft">
+           <!-- <item alignment="Qt::AlignLeft">
             <widget class="QComboBox" name="select_search_option">
              <property name="minimumSize">
               <size>
@@ -823,18 +823,18 @@
               </property>
              </item>
             </widget>
-           </item>
+           </item> -->
            <item alignment="Qt::AlignLeft">
             <widget class="QLineEdit" name="txt_search">
              <property name="minimumSize">
               <size>
-               <width>300</width>
+               <width>400</width>
                <height>40</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>300</width>
+               <width>400</width>
                <height>40</height>
               </size>
              </property>
@@ -846,7 +846,7 @@
              </property>
             </widget>
            </item>
-           <item alignment="Qt::AlignLeft">
+           <!-- <item alignment="Qt::AlignLeft">
             <widget class="QLabel" name="lbl_from">
              <property name="minimumSize">
               <size>
@@ -997,7 +997,7 @@
               </size>
              </property>
             </widget>
-           </item>
+           </item> -->
            <item alignment="Qt::AlignRight">
             <widget class="QPushButton" name="btn_edit_accounts">
              <property name="minimumSize">
@@ -1019,7 +1019,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/edit.png</normaloff>:/icons/assets/icons/edit.png</iconset>
              </property>
              <property name="iconSize">
@@ -1051,7 +1051,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/print.png</normaloff>:/icons/assets/icons/print.png</iconset>
              </property>
              <property name="iconSize">
@@ -1083,7 +1083,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/refresh.png</normaloff>:/icons/assets/icons/refresh.png</iconset>
              </property>
              <property name="iconSize">
@@ -1136,7 +1136,7 @@
            <enum>Qt::SolidLine</enum>
           </property>
           <property name="sortingEnabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="cornerButtonEnabled">
            <bool>true</bool>
@@ -1380,7 +1380,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>receivable Balance</string>
+                 <string>Receivable Balance</string>
                 </property>
                </widget>
               </item>
@@ -1573,7 +1573,7 @@
               <string>Add RozNamcha</string>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/plus.png</normaloff>:/icons/assets/icons/plus.png</iconset>
              </property>
              <property name="iconSize">
@@ -1777,7 +1777,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/search.png</normaloff>:/icons/assets/icons/search.png</iconset>
              </property>
              <property name="iconSize">
@@ -1806,7 +1806,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/print.png</normaloff>:/icons/assets/icons/print.png</iconset>
              </property>
              <property name="iconSize">
@@ -1838,7 +1838,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/refresh.png</normaloff>:/icons/assets/icons/refresh.png</iconset>
              </property>
              <property name="iconSize">
@@ -1903,7 +1903,7 @@
            <bool>true</bool>
           </property>
           <property name="sortingEnabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="cornerButtonEnabled">
            <bool>true</bool>
@@ -1945,7 +1945,7 @@
            <number>30</number>
           </attribute>
           <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-           <bool>true</bool>
+           <bool>false</bool>
           </attribute>
           <attribute name="verticalHeaderStretchLastSection">
            <bool>false</bool>
@@ -2334,7 +2334,7 @@ QFrame {
               <string>Business Details</string>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/plus.png</normaloff>:/icons/assets/icons/plus.png</iconset>
              </property>
              <property name="iconSize">
@@ -2371,7 +2371,7 @@ QFrame {
               <string>Add Khata</string>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/plus.png</normaloff>:/icons/assets/icons/plus.png</iconset>
              </property>
              <property name="iconSize">
@@ -2411,7 +2411,7 @@ QFrame {
               <string>Change Business Details</string>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/edit.png</normaloff>:/icons/assets/icons/edit.png</iconset>
              </property>
              <property name="iconSize">
@@ -2451,7 +2451,7 @@ QFrame {
               <string>Change User Deatils</string>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/edit.png</normaloff>:/icons/assets/icons/edit.png</iconset>
              </property>
              <property name="iconSize">
@@ -2491,7 +2491,7 @@ QFrame {
               <string>Change Password</string>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset resource="../resources.qrc">
                <normaloff>:/icons/assets/icons/edit.png</normaloff>:/icons/assets/icons/edit.png</iconset>
              </property>
              <property name="iconSize">
@@ -2870,7 +2870,7 @@ QFrame {
   </widget>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

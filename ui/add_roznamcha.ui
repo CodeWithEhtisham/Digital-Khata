@@ -26,7 +26,7 @@
    <string>Roz Namcha</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="../resources.qrc">
     <normaloff>:/icons/assets/icons/logo.png</normaloff>:/icons/assets/icons/logo.png</iconset>
   </property>
   <property name="iconSize">
@@ -79,6 +79,7 @@ QDateEdit {
 QComboBox {
 	border-radius: 5px;
 	padding: 5px 5px;
+	font-size: 17px;
 }
 
 QTextEdit {
@@ -309,11 +310,9 @@ QTextEdit {
             </property>
             <property name="font">
              <font>
-              <family>Calibri</family>
-              <pointsize>14</pointsize>
+              <pointsize>-1</pointsize>
              </font>
             </property>
-            
             <item>
              <property name="text">
               <string>Cash In</string>
@@ -342,26 +341,17 @@ QTextEdit {
             </property>
             <property name="font">
              <font>
-              <family>Calibri</family>
-              <pointsize>14</pointsize>
+              <pointsize>-1</pointsize>
              </font>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
             </property>
             <item>
              <property name="text">
               <string>Select Option</string>
              </property>
             </item>
-            <!-- <item>
-             <property name="text">
-              <string>Cash In</string>
-             </property>
-            </item>
-            
-            <item>
-             <property name="text">
-              <string>Cash Out</string>
-             </property>
-            </item> -->
            </widget>
           </item>
           <item>
@@ -456,7 +446,7 @@ QTextEdit {
           <string>SAVE</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/save.png</normaloff>:/icons/assets/icons/save.png</iconset>
          </property>
          <property name="iconSize">
@@ -484,7 +474,7 @@ QTextEdit {
           <string>CLEAR</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/clear.png</normaloff>:/icons/assets/icons/clear.png</iconset>
          </property>
          <property name="iconSize">
@@ -512,7 +502,7 @@ QTextEdit {
           <string>CANCEL</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/close.png</normaloff>:/icons/assets/icons/close.png</iconset>
          </property>
          <property name="iconSize">
@@ -531,7 +521,7 @@ QTextEdit {
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

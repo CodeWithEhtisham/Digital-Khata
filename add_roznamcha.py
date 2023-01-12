@@ -38,6 +38,16 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
         self.txt_reference.setText('')
         self.txt_description.setText('')
         self.txt_amount.setText('')
+        
+    def not_clear_fields(self):
+        self.txt_date.setDate(QDate.currentDate())
+        # self.cashInOut_option.setCurrentIndex(0)
+        # self.names_list_option.setCurrentIndex(0)
+        self.txt_reference.setText('')
+        self.txt_description.setText('')
+        self.txt_amount.setText('')
+        
+    
     
 
     def save_roznamcha(self):
@@ -50,7 +60,7 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
         if name=="Select Option":
             QMessageBox.warning(self,"Error","Please Select Account Name")
             return
-        if refrences != '' and description != "" and amount!='':
+        if description != "" and amount!='':
             try:    
                 acccount_id=self.db.select(
                     table_name="accounts",
@@ -106,7 +116,8 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
                     self.db.conn.execute(f"INSERT INTO account_details (account_id,date,refrence,description,cash_out,remaining) VALUES ({acccount_id},'{date}','{refrences}','{description}',{amount},{accounts_remaining})")
                 self.db.conn.commit()
                 QMessageBox.information(self,"Success","record added successully")
-                self.close()
+                # self.close()
+                self.not_clear_fields()
             except Exception as e:
                 QMessageBox.warning(self,"Error",f"record not added {e}")
 

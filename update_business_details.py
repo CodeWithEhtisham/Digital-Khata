@@ -23,11 +23,12 @@ class UpdateBusinessWindow(QMainWindow, FORM_MAIN):
 
         db= DBHandler()
         data= db.select_all('business','*')[0]
-        self.txt_business_name.setText(data[1])
-        self.txt_business_email.setText(data[2])
-        self.txt_business_address.setText(data[4])
-        self.txt_business_contact.setText(data[3])
-        self.txt_business_owner.setText(data[5])
+        if data:
+            self.txt_business_name.setText(data[1])
+            self.txt_business_email.setText(data[2])
+            self.txt_business_contact.setText(data[3])
+            self.txt_business_address.setText(data[4])
+            self.txt_business_owner.setText(data[5])
         db.close()
 
     def Handle_Buttons(self):
@@ -38,8 +39,8 @@ class UpdateBusinessWindow(QMainWindow, FORM_MAIN):
     def Update_Business(self):
         business_name = self.txt_business_name.text()
         business_email = self.txt_business_email.text()
-        business_address = self.txt_business_address.text()
         business_phone = self.txt_business_contact.text()
+        business_address = self.txt_business_address.text()
         business_owner = self.txt_business_owner.text()
 
         if business_name and business_email and business_address and business_phone and business_owner:

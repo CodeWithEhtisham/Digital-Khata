@@ -47,7 +47,7 @@ class ChangePasswordWindow(QMainWindow, FORM_MAIN):
             else:
                 QMessageBox.warning(self, "Error", "New password and confirm password do not match")
 
-        
+        self.close()
 
     def Clear(self):
         self.txt_old_pwd.setText('')

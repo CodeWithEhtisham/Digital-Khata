@@ -26,7 +26,7 @@
    <string>Login</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="../resources.qrc">
     <normaloff>:/icons/assets/icons/logo.png</normaloff>:/icons/assets/icons/logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -262,7 +262,7 @@ QTextEdit {
           <string>Login</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/user.png</normaloff>:/icons/assets/icons/user.png</iconset>
          </property>
          <property name="iconSize">
@@ -290,7 +290,7 @@ QTextEdit {
           <string>CLEAR</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/clear.png</normaloff>:/icons/assets/icons/clear.png</iconset>
          </property>
          <property name="iconSize">
@@ -318,7 +318,7 @@ QTextEdit {
           <string>CANCEL</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/assets/icons/close.png</normaloff>:/icons/assets/icons/close.png</iconset>
          </property>
          <property name="iconSize">
@@ -397,7 +397,7 @@ QTextEdit {
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>
