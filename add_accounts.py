@@ -38,9 +38,9 @@ class AddAccountsWindow(QMainWindow, FORM_MAIN):
         if name != '' and phone != '' and address != '' and balance_type != '' and balance != '':
             try:
                 if balance_type == 'Payable':
-                    balance = -float(balance)
+                    balance = float(balance)
                 else:
-                    balance=float(balance)
+                    balance=-float(balance)
                 self.db.insert(
                     table_name='accounts',
                     columns="name, phone, address, balance_type, balance,khata_id",

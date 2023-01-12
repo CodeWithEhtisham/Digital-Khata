@@ -1248,7 +1248,7 @@
           </column>
           <column>
            <property name="text">
-            <string>Opening Balance</string>
+            <string>Remaining Balance</string>
            </property>
            <property name="font">
             <font>
@@ -1314,12 +1314,78 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Opening Balance</string>
+                 <string>Total Accounts</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="lbl_total_opening">
+               <widget class="QLabel" name="lbl_total_accounts">
+                <property name="font">
+                 <font>
+                  <family>Calibri</family>
+                  <pointsize>16</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="frameShape">
+             <enum>QFrame::Box</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+                <property name="text">
+                 <string>00</string>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignRight">
+               <widget class="QLabel" name="label_7">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Payable Balance</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_total_payable">
+                <property name="font">
+                 <font>
+                  <family>Calibri</family>
+                  <pointsize>16</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="frameShape">
+             <enum>QFrame::Box</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+                <property name="text">
+                 <string>00</string>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignRight">
+               <widget class="QLabel" name="label_7">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>receivable Balance</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_total_receivable">
                 <property name="font">
                  <font>
                   <family>Calibri</family>
@@ -1518,7 +1584,7 @@
              </property>
             </widget>
            </item>
-           <item alignment="Qt::AlignLeft">
+           <!-- <item alignment="Qt::AlignLeft">
             <widget class="QComboBox" name="select_search_option_RN">
              <property name="minimumSize">
               <size>
@@ -1557,7 +1623,7 @@
               </property>
              </item>
             </widget>
-           </item>
+           </item> -->
            <item alignment="Qt::AlignLeft">
             <widget class="QLineEdit" name="txt_search_RN">
              <property name="minimumSize">

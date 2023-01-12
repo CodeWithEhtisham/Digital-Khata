@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
 from db_handler import DBHandler
+from PyQt5 import QtCore, QtGui, QtWidgets, QtPrintSupport
 import sys
 from create_business import NewBusinessWindow
 from update_business_details import UpdateBusinessWindow
@@ -61,6 +62,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
         # add btns
         self.btn_add_khata.clicked.connect(self.add_khata)
         self.btn_add_accounts.clicked.connect(self.add_accounts)
+        self.btn_print_RN.clicked.connect(self.print_roznamcha_table_pdf)
 
         # tables double clicked
         self.accounts_table.doubleClicked.connect(self.account_details)
@@ -70,7 +72,125 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.btn_change_business_details.clicked.connect(self.edit_business)
         self.btn_change_user_details.clicked.connect(self.change_user_details)
         self.btn_change_pwd.clicked.connect(self.change_password)
+        self.txt_date_from_RN.setDate(QDate.currentDate())
+        self.txt_date_to_RN.setDate(QDate.currentDate())
 
+        # search opton table
+        self.txt_search_RN.textChanged.connect(lambda:self.search_roznamcha(self.txt_search_RN.text()))
+        self.btn_search_RN.clicked.connect(lambda:self.search_roznamcha(self.txt_search_RN.text(),"date"))
+        self.btn_refresh_RN.clicked.connect(self.update)
+        self.btn_refresh_accounts.clicked.connect(self.update)
+        self.txt_search.textChanged.connect(self.search_accounts)
+    
+    def print_roznamcha_table_pdf(self):
+        filename=QFileDialog.getSaveFileName(self,"Save File","","PDF(*.pdf)")
+        if filename[0]:
+            printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.PrinterResolution)
+            printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
+            printer.setPaperSize(QtPrintSupport.QPrinter.A4)
+            printer.setOrientation(QtPrintSupport.QPrinter.Landscape)
+            printer.setOutputFileName(filename[0])
+            document = QtGui.QTextDocument()
+            html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <style>
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 5px;
+                text-align: left;
+            }
+            </style>
+            </head>
+            <body>
+            <h1 style="text-align:center;">Roznamcha</h1>
+            <table style="width:100%">
+            <tr>
+
+            <th>S/NO</th>
+            <th>Date</th>
+            <th>Cash IN/Out</th>
+            <th>Name</th>
+            <th>Refrence</th>
+            <th>Description</th>
+            <th>Cash In</th>
+            <th>Cash Out</th>
+            <th>Remaining</th>
+            </tr>
+            """
+            for i in range(self.roznamcha_table.rowCount()):
+                html += "<tr>"
+                for j in range(self.roznamcha_table.columnCount()):
+                    html += "<td>"+self.roznamcha_table.item(i,j).text()+"</td>"
+                html += "</tr>"
+            html += """
+            </table>
+            </body>
+            </html>
+            """
+            document.setHtml(html)
+            document.print_(printer)
+            QMessageBox.information(self,"Success","PDF Saved Successfully")
+
+            
+
+
+
+
+
+
+
+
+    def search_accounts(self):
+        search=self.txt_search.text()
+        if self.khata_options.currentText()!="Select Khata":
+            if self.khata_options.currentText()=="": self.update(); return 
+            # data = self.db.select(table_name='accounts', columns="accounts_id,name,phone,address,balance", condition=f"khata_id={self.get_khata_id(self.khata_options.currentText())} and name LIKE '%{search}%' or phone LIKE '%{search}%' or address LIKE '%{search}%'")
+            data = self.db.conn.execute(f"SELECT accounts_id,name,phone,address,balance FROM accounts WHERE khata_id={self.get_khata_id(self.khata_options.currentText())} and name LIKE '%{search}%' or phone LIKE '%{search}%' or address LIKE '%{search}%'").fetchall()
+            if data:
+                self.update_table(data=data,obj=self.accounts_table)
+                payable=sum([i[4] for i in data if i[4]<0])
+                receivable=sum([i[4] for i in data if i[4]>0])
+                self.lbl_total_receivable.setText(str(receivable))
+                self.lbl_total_payable.setText(str(payable))
+                self.lbl_total_accounts.setText(str(len(data)))
+            else:
+                self.accounts_table.setRowCount(0)
+            
+        else:
+            self.accounts_table.setRowCount(0)
+    
+    
+    
+    
+    def search_roznamcha(self,search,type="all"):
+        if type=="all":
+            data = self.db.conn.execute(f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and a.name LIKE '%{search}%' or r.description LIKE '%{search}%' or r.refrences LIKE '%{search}%'").fetchall()
+        elif type=="date":
+            from_date=self.txt_date_from_RN.text()
+            to_date=self.txt_date_to_RN.text()
+            data = self.db.conn.execute(f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}'").fetchall()
+        else:
+            self.update()
+            return 
+        
+        cash_in = 0
+        cash_out=0
+        self.roznamcha_table.setRowCount(0)
+        for index,row in enumerate(data):
+            self.roznamcha_table.insertRow(index)
+            cash_in+=row[6]
+            cash_out+=row[7]
+            for idx,i in enumerate(row):
+                self.roznamcha_table.setItem(index,idx,QTableWidgetItem(str(i)))
+            self.roznamcha_table.item(index,6).setForeground(QColor(0,255,0))
+            self.roznamcha_table.item(index,7).setForeground(QColor(255,0,0))
+        self.lbl_total_cash_In.setText(str(cash_in))
+        self.lbl_total_cash_out.setText(str(cash_out))
 
 
     def update(self):
@@ -80,20 +200,53 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.lbl_business_contact.setText(data[0][4])
             self.lbl_business_address.setText(data[0][3])
 
-        
+        # khata table
         if self.khata_options.currentText()!="Select Khata":
             data = self.db.select(table_name='accounts', columns="accounts_id,name,phone,address,balance", condition=f"khata_id={self.get_khata_id(self.khata_options.currentText())}")
             if data:
                 self.update_table(data=data,obj=self.accounts_table)
+                payable=sum([i[4] for i in data if i[4]<0])
+                receivable=sum([i[4] for i in data if i[4]>0])
+                self.lbl_total_receivable.setText(str(receivable))
+                self.lbl_total_payable.setText(str(payable))
+                self.lbl_total_accounts.setText(str(len(data)))
             else:
                 self.accounts_table.setRowCount(0)
         else:
             self.accounts_table.setRowCount(0)
 
+        # roznamcha table
+        if self.khata_options.currentText()!="Select Khata":
+            previous_day=QDate.currentDate().addDays(-1).toString('dd/MM/yyyy')
+            last_id = self.db.conn.execute(f"SELECT r.roznamcha_id FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{previous_day}'").fetchall()
+            if last_id:
+                last_id=last_id[-1][0]
+                data = self.db.conn.execute(f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}")
+            else:
+                data = self.db.conn.execute(f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}'").fetchall()
+
+            if data:
+                cash_in = 0
+                cash_out=0
+                self.roznamcha_table.setRowCount(0)
+                for index,row in enumerate(data):
+                    self.roznamcha_table.insertRow(index)
+                    cash_in+=row[6]
+                    cash_out+=row[7]
+                    for idx,i in enumerate(row):
+                        self.roznamcha_table.setItem(index,idx,QTableWidgetItem(str(i)))
+                    self.roznamcha_table.item(index,6).setForeground(QColor(0,255,0))
+                    self.roznamcha_table.item(index,7).setForeground(QColor(255,0,0))
+                self.lbl_total_cash_In.setText(str(cash_in))
+                self.lbl_total_cash_out.setText(str(cash_out))
+            else:
+                self.roznamcha_table.setRowCount(0)
+
     def account_details(self):
         # get selected row first cell
         id = self.accounts_table.item(self.accounts_table.currentRow(), 0).text()
-        self.window = AccountDetailsWindow(id)
+        name=self.accounts_table.item(self.accounts_table.currentRow(), 1).text()
+        self.window = AccountDetailsWindow(id,name)
         self.window.show()
 
     def khata_select_update(self):

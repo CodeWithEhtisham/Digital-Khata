@@ -29,6 +29,7 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
         self.btn_save.clicked.connect(self.save_roznamcha)
         self.btn_clear.clicked.connect(self.clear_fields)
         self.btn_cancel.clicked.connect(self.close)
+        
 
     def clear_fields(self):
         self.txt_date.setDate(QDate.currentDate())
@@ -56,18 +57,54 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
                     columns="accounts_id",
                     condition=f"name='{name}' and khata_id={self.khata_id}"
                 )[0][0]
+                remaing=self.db.conn.execute(f"SELECT remaining FROM roznamcha WHERE khata_id={self.khata_id} ORDER BY roznamcha_id DESC LIMIT 1").fetchone()
+                if remaing==None:
+                    remaing=0
+                else:
+                    remaing=remaing[0]
+                print(remaing)
+                if remaing>=0:
+                    if cash_type=="Cash In":
+                        remaing+=amount
+                    else:
+                        remaing-=amount
+                else:
+                    if cash_type=="Cash In":
+                        remaing+=amount
+                    else:
+                        remaing-=amount
+                    
+                
                 if cash_type=="Cash In":
                     self.db.insert(
                         table_name='roznamcha',
-                        columns="khata_id,accounts_id,date,refrences,description,cash_in,remaining",
-                        values=f"'{self.khata_id}','{acccount_id}','{date}','{refrences}','{description}',{float(amount)},{float(222.222)}"
+                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_in,remaining",
+                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash In','{refrences}','{description}',{float(amount)},{float(remaing)}"
                         )
                 else:
                     self.db.insert(
                         table_name='roznamcha',
-                        columns="khata_id,accounts_id,date,refrences,description,cash_out,remaining",
-                        values=f"'{self.khata_id}','{acccount_id}','{date}','{refrences}','{description}',{float(amount)},{float(222.222)}"
+                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_out,remaining",
+                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash Out','{refrences}','{description}',{float(amount)},{float(remaing)}"
                         )
+
+                accounts_remaining=self.db.conn.execute(f"SELECT balance FROM accounts WHERE accounts_id={acccount_id}").fetchone()[0]
+                if accounts_remaining>=0:
+                    if cash_type=="Cash In":
+                        accounts_remaining+=amount
+                    else:
+                        accounts_remaining-=amount
+                else:
+                    if cash_type=="Cash In":
+                        accounts_remaining+=amount
+                    else:
+                        accounts_remaining-=amount
+                self.db.conn.execute(f"UPDATE accounts SET balance={accounts_remaining} WHERE accounts_id={acccount_id}")
+                if cash_type=="Cash In":
+                    self.db.conn.execute(f"INSERT INTO account_details (account_id,date,refrence,description,cash_in,remaining) VALUES ({acccount_id},'{date}','{refrences}','{description}',{amount},{accounts_remaining})")
+                else:
+                    self.db.conn.execute(f"INSERT INTO account_details (account_id,date,refrence,description,cash_out,remaining) VALUES ({acccount_id},'{date}','{refrences}','{description}',{amount},{accounts_remaining})")
+                self.db.conn.commit()
                 QMessageBox.information(self,"Success","record added successully")
                 self.close()
             except Exception as e:
