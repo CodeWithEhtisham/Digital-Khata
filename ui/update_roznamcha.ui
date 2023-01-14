@@ -467,7 +467,7 @@ QTextEdit {
           <cursorShape>OpenHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>CLEAR</string>
+          <string>Delete</string>
          </property>
          <property name="icon">
           <iconset resource="../resources.qrc">
