@@ -21,6 +21,7 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
         self.setupUi(self)
         self.db= DBHandler()
         self.roznamcha_id = roznamcha_id
+        self.khata_id = self.db.conn.execute(f"SELECT khata_id FROM roznamcha WHERE roznamcha_id={self.roznamcha_id}").fetchone()[0]
         self.Handle_Buttons()
         self.fill_fields()
 
@@ -62,12 +63,18 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
     def update_roznamcha(self):
         try:
             account_id = self.db.conn.execute(f"SELECT accounts_id FROM accounts WHERE name='{self.names_list_option.currentText()}'").fetchone()[0]
-            record = self.db.conn.execute(f"SELECT * FROM roznamcha WHERE roznamcha_id>={self.roznamcha_id} and accounts_id={account_id}").fetchall()
-            previous_balance = self.db.conn.execute(f"SELECT remaining from roznamcha where roznamcha_id<{self.roznamcha_id} and accounts_id={account_id} order by roznamcha_id desc limit 1").fetchone()
+            record = self.db.conn.execute(f"SELECT * FROM roznamcha WHERE roznamcha_id>={self.roznamcha_id} and khata_id={self.khata_id}").fetchall()
+            account_previous_balance = self.db.conn.execute(f"SELECT accounts_remaining from roznamcha where roznamcha_id<{self.roznamcha_id} and khata_id={self.khata_id} and accounts_id={account_id} order by roznamcha_id desc limit 1").fetchone()
+            previous_balance = self.db.conn.execute(f"SELECT remaining from roznamcha where roznamcha_id<{self.roznamcha_id} and khata_id={self.khata_id} order by roznamcha_id desc limit 1").fetchone()
             if previous_balance is None:
                 previous_balance = 0
             else:
                 previous_balance = float(previous_balance[0])
+
+            if account_previous_balance is None:
+                account_previous_balance = 0
+            else:
+                account_previous_balance = float(account_previous_balance[0])
             date=self.txt_date.text()
             cash_type=self.cashInOut_option.currentText()
             refrences=self.txt_reference.text()
@@ -75,8 +82,10 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
             description = "account update"
             amount=float(self.txt_amount.text())
 
+
             previous_balance=self.previous_calculation(previous_balance,amount,cash_type)
-            self.db.conn.execute(f"UPDATE roznamcha SET date='{date}',cash_type='{cash_type}',accounts_id={account_id},refrences='{refrences}',description='{description}',cash_in={amount if cash_type=='Cash In' else 0},cash_out={amount if cash_type=='Cash Out' else 0},remaining={previous_balance} WHERE roznamcha_id={self.roznamcha_id}")
+            account_previous_balance=self.previous_calculation(account_previous_balance,amount,cash_type)
+            self.db.conn.execute(f"UPDATE roznamcha SET date='{date}',cash_type='{cash_type}',accounts_id={account_id},refrences='{refrences}',description='{description}',cash_in={amount if cash_type=='Cash In' else 0},cash_out={amount if cash_type=='Cash Out' else 0},remaining={previous_balance},accounts_remaining={account_previous_balance} WHERE roznamcha_id={self.roznamcha_id}")
             self.db.conn.commit()
             for rec in record[1:]:
                 # (27, 2, 4, '12/01/2023', 'Cash In', 'asdf', 'asdf', 7000, 0, 12000)
@@ -88,7 +97,22 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
                 self.db.conn.execute(f"UPDATE roznamcha SET remaining={previous_balance} WHERE roznamcha_id={rec[0]}")
                 self.db.conn.commit()
 
-            account_details_id=self.db.conn.execute
+
+            record = self.db.conn.execute(f"SELECT * FROM roznamcha WHERE roznamcha_id>={self.roznamcha_id} and khata_id={self.khata_id} and accounts_id={account_id}").fetchall()
+            for rec in record[1:]:
+                if rec[4]=="Cash In":
+                    amount=float(rec[7])
+                else:
+                    amount=float(rec[8])
+                account_previous_balance=self.previous_calculation(account_previous_balance,amount,rec[4])
+                self.db.conn.execute(f"UPDATE roznamcha SET accounts_remaining={account_previous_balance} WHERE roznamcha_id={rec[0]}")
+                self.db.conn.commit()
+
+
+
+
+
+            # account_details_id=self.db.conn.execute
             QMessageBox.information(self, "Success", "Roznamcha Updated Successfully")
             self.close()
         except Exception as e:
@@ -101,13 +125,18 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
             ret = QMessageBox.question(self,'', "Are you sure to reset all the values?", QMessageBox.Yes | QMessageBox.No)
             if ret==QMessageBox.Yes:
                 account_id = self.db.conn.execute(f"SELECT accounts_id FROM accounts WHERE name='{self.names_list_option.currentText()}'").fetchone()[0]
-                record = self.db.conn.execute(f"SELECT * FROM roznamcha WHERE roznamcha_id>={self.roznamcha_id} and accounts_id={account_id}").fetchall()
-                previous_balance = self.db.conn.execute(f"SELECT remaining from roznamcha where roznamcha_id<{self.roznamcha_id} and accounts_id={account_id} order by roznamcha_id desc limit 1").fetchone()
+                record = self.db.conn.execute(f"SELECT * FROM roznamcha WHERE roznamcha_id>={self.roznamcha_id} and khata_id={self.khata_id}").fetchall()
+                previous_balance = self.db.conn.execute(f"SELECT remaining from roznamcha where roznamcha_id<{self.roznamcha_id} and khata_id={self.khata_id} order by roznamcha_id desc limit 1").fetchone()
+                account_previous_balance = self.db.conn.execute(f"SELECT accounts_remaining from roznamcha where roznamcha_id<{self.roznamcha_id} and khata_id={self.khata_id} and accounts_id={account_id} order by roznamcha_id desc limit 1").fetchone()
                 if previous_balance is None:
                     previous_balance = 0
                 else:
                     previous_balance = float(previous_balance[0])
                 # delete record from roznamcha where roznamcha_id= self.roznamcha_id
+                if account_previous_balance is None:
+                    account_previous_balance = 0
+                else:
+                    account_previous_balance = float(account_previous_balance[0])
                 self.db.conn.execute(f"DELETE FROM roznamcha WHERE roznamcha_id={self.roznamcha_id}")
                 self.db.conn.commit()
                 for rec in record[1:]:
@@ -118,6 +147,17 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
                         amount=float(rec[8])
                     previous_balance=self.previous_calculation(previous_balance,amount,rec[4])
                     self.db.conn.execute(f"UPDATE roznamcha SET remaining={previous_balance} WHERE roznamcha_id={rec[0]}")
+                    self.db.conn.commit()
+
+                record = self.db.conn.execute(f"SELECT * FROM roznamcha WHERE roznamcha_id>{self.roznamcha_id} and khata_id={self.khata_id} and accounts_id={account_id}").fetchall()
+                print(record)
+                for rec in record:
+                    if rec[4]=="Cash In":
+                        amount=float(rec[7])
+                    else:
+                        amount=float(rec[8])
+                    account_previous_balance=self.previous_calculation(account_previous_balance,amount,rec[4])
+                    self.db.conn.execute(f"UPDATE roznamcha SET accounts_remaining={account_previous_balance} WHERE roznamcha_id={rec[0]}")
                     self.db.conn.commit()
 
                 

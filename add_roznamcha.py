@@ -29,6 +29,16 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
         self.btn_save.clicked.connect(self.save_roznamcha)
         self.btn_clear.clicked.connect(self.clear_fields)
         self.btn_cancel.clicked.connect(self.close)
+        self.txt_amount.textChanged.connect(self.add_comma_separator)
+
+    def add_comma_separator(self):
+        amount = self.txt_amount.text()
+        if amount != '':
+            amount = amount.replace(',', '')
+            amount = int(amount)
+            amount = "{:,}".format(amount)
+            self.txt_amount.setText(amount)
+            self.txt_amount.setCursorPosition(len(amount))
         
 
     def clear_fields(self):
@@ -56,7 +66,8 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
         name=self.names_list_option.currentText()
         refrences=self.txt_reference.text()
         description=self.txt_description.text()
-        amount=float(self.txt_amount.text())
+        amount = self.txt_amount.text().replace(',', '')
+        amount=float(amount)
         if name=="Select Option":
             QMessageBox.warning(self,"Error","Please Select Account Name")
             return
@@ -84,18 +95,33 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
                     else:
                         remaing-=amount
                     
+                accounts_remaining = self.db.conn.execute(f"SELECT accounts_remaining FROM roznamcha WHERE accounts_id={acccount_id} ORDER BY roznamcha_id DESC LIMIT 1").fetchone()
+                if accounts_remaining==None:
+                    accounts_remaining=0
+                else:
+                    accounts_remaining=accounts_remaining[0]
+                if accounts_remaining>=0:
+                    if cash_type=="Cash In":
+                        accounts_remaining+=amount
+                    else:
+                        accounts_remaining-=amount
+                else:
+                    if cash_type=="Cash In":
+                        accounts_remaining+=amount
+                    else:
+                        accounts_remaining-=amount
                 
                 if cash_type=="Cash In":
                     self.db.insert(
                         table_name='roznamcha',
-                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_in,remaining",
-                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash In','{refrences}','{description}',{float(amount)},{float(remaing)}"
+                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_in,remaining,accounts_remaining",
+                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash In','{refrences}','{description}',{float(amount)},{float(remaing)},{float(accounts_remaining)}"
                         )
                 else:
                     self.db.insert(
                         table_name='roznamcha',
-                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_out,remaining",
-                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash Out','{refrences}','{description}',{float(amount)},{float(remaing)}"
+                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_out,remaining,accounts_remaining",
+                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash Out','{refrences}','{description}',{float(amount)},{float(remaing)},{float(accounts_remaining)}"
                         )
 
                 # accounts_remaining=self.db.conn.execute(f"SELECT balance FROM accounts WHERE accounts_id={acccount_id}").fetchone()[0]

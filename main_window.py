@@ -203,6 +203,47 @@ class MainWindow(QMainWindow, FORM_MAIN):
             document.print_(printer)
             QMessageBox.information(self, "Success", "PDF Saved Successfully")
 
+
+    def update_account_table(self,data):
+        payable = 0
+        receivable = 0
+        if data:
+            self.accounts_table.setRowCount(0)
+            for index, row in enumerate(data):
+                self.accounts_table.insertRow(index)
+                for idx, i in enumerate(row):
+                    if idx == 4 and i >=0:
+                        payable+=i
+                    elif idx == 4 and i < 0:
+                        receivable+=i
+                    if idx == len(row)-1:
+                        accounts_last_balance = self.db.conn.execute(f"SELECT accounts_remaining FROM roznamcha WHERE accounts_id={row[0]} ORDER BY roznamcha_id DESC LIMIT 1").fetchone()
+                        if accounts_last_balance:
+                            i = accounts_last_balance[0]
+                    if type(i) == float or type(i) == int:
+                        i=f"{int(i):,}"
+                    self.accounts_table.setItem(index, idx, QTableWidgetItem(str(i)))
+
+            self.lbl_total_receivable.setText(str(f"{int(receivable):,}"))
+            self.lbl_total_payable.setText(str(f"{int(payable):,}"))
+            self.lbl_total_accounts.setText(str(len(data)))
+
+            # self.accounts_table.item(
+            #     index, 7).setForeground(QColor(255, 0, 0))
+
+            if receivable < 0:
+                self.lbl_total_receivable.setStyleSheet("color: red")
+            else:
+                self.lbl_total_receivable.setStyleSheet("color: green")
+
+            if payable < 0:
+                self.lbl_total_payable.setStyleSheet("color: red")
+            else:
+                self.lbl_total_payable.setStyleSheet("color: green")
+
+        else:
+            self.accounts_table.setRowCount(0)
+
     def search_accounts(self):
         search = self.txt_search.text()
         if self.khata_options.currentText() != "Select Khata":
@@ -213,29 +254,16 @@ class MainWindow(QMainWindow, FORM_MAIN):
             data = self.db.conn.execute(
                 f"SELECT accounts_id,name,phone,address,balance FROM accounts WHERE khata_id={self.get_khata_id(self.khata_options.currentText())} and name LIKE '%{search}%' or phone LIKE '%{search}%' or address LIKE '%{search}%'").fetchall()
             if data:
-                self.update_table(data=data, obj=self.accounts_table)
-                payable = sum([i[4] for i in data if i[4] < 0])
-                receivable = sum([i[4] for i in data if i[4] > 0])
-                self.lbl_total_receivable.setText(str(receivable))
-                self.lbl_total_payable.setText(str(payable))
-                self.lbl_total_accounts.setText(str(len(data)))
-
-                if receivable < 0:
-                    self.lbl_total_receivable.setStyleSheet("color: red")
-                else:
-                    self.lbl_total_receivable.setStyleSheet("color: green")
-
-                if payable < 0:
-                    self.lbl_total_payable.setStyleSheet("color: red")
-                else:
-                    self.lbl_total_payable.setStyleSheet("color: green")
-            else:
-                self.accounts_table.setRowCount(0)
+                self.update_account_table(data=data)
 
         else:
             self.accounts_table.setRowCount(0)
 
     def search_roznamcha(self, search, type="all"):
+        if search == "":
+            print(search, "empty")
+            self.update()
+            return
         if type == "all":
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and a.name LIKE '%{search}%' or r.description LIKE '%{search}%' or r.refrences LIKE '%{search}%'").fetchall()
@@ -283,29 +311,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
                                   condition=f"khata_id={self.get_khata_id(self.khata_options.currentText())}")
 
             if data:
-                self.update_table(data=data, obj=self.accounts_table)
-                payable = sum([i[4] for i in data if i[4] < 0])
-                receivable = sum([i[4] for i in data if i[4] > 0])
-
-                self.lbl_total_receivable.setText(str(receivable))
-                self.lbl_total_payable.setText(str(payable))
-                self.lbl_total_accounts.setText(str(len(data)))
-
-                # self.accounts_table.item(
-                #     index, 7).setForeground(QColor(255, 0, 0))
-
-                if receivable < 0:
-                    self.lbl_total_receivable.setStyleSheet("color: red")
-                else:
-                    self.lbl_total_receivable.setStyleSheet("color: green")
-
-                if payable < 0:
-                    self.lbl_total_payable.setStyleSheet("color: red")
-                else:
-                    self.lbl_total_payable.setStyleSheet("color: green")
-
-            else:
-                self.accounts_table.setRowCount(0)
+                self.update_account_table(data=data)
         else:
             self.accounts_table.setRowCount(0)
 
@@ -467,6 +473,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.txt_user_email.setText(data[0][2])
             self.txt_user_contact.setText(data[0][3])
             self.txt_user_username.setText(data[0][4])
+            self.lbl_user_name.setText(data[0][1])
 
         data = db.select_all('business', "*")
         if data:

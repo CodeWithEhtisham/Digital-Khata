@@ -14,7 +14,6 @@ from os import path
 from PyQt5.uic import loadUiType
 from resources_rc import *
 import pandas as pd
-import pdfkit as pdf
 FORM_MAIN, _ = loadUiType('ui/account_details.ui')
 
 
@@ -47,16 +46,16 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         filename = QFileDialog.getSaveFileName(
             self, "Save File", "", "PDF(*.pdf)")
         if filename[0]:
-            printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.PrinterResolution)
-            printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
-            printer.setFullPage(True)
-            printer.setOrientation(QtPrintSupport.QPrinter.Landscape)
-            # table not print correctly in pdf 
-            printer.setPaperSize(QSizeF(self.account_details_table.width(), self.account_details_table.height()), QtPrintSupport.QPrinter.DevicePixel)
+            # printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.PrinterResolution)
+            # printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
+            # printer.setFullPage(True)
+            # printer.setOrientation(QtPrintSupport.QPrinter.Landscape)
+            # # table not print correctly in pdf 
+            # printer.setPaperSize(QSizeF(self.account_details_table.width(), self.account_details_table.height()), QtPrintSupport.QPrinter.DevicePixel)
 
 
-            printer.setOutputFileName(filename[0])
-            document = QtGui.QTextDocument()
+            # printer.setOutputFileName(filename[0])
+            # doc = QtGui.QTextDocument()
             
             # convert qtwidgettable to pandas dataframe
             df = pd.DataFrame(
@@ -66,12 +65,12 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
                 [[self.account_details_table.item(row, column).text() for column in range(self.account_details_table.columnCount())] for row in range(self.account_details_table.rowCount())]
             )
             # convert pandas dataframe to html
-            print(df)
-            html = df.to_html(index=False, header=False, border=0)
+            # print(df)
+            html = df.to_html(index=False, header=False)
 
             # add heaqder and footer to html
             html = """<html>
-            <head>
+            <body>
             <style>
 
                 body {
@@ -128,17 +127,26 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
                     font-weight: 700;
                 }
             </style>
-            </head>
-            <body>
-            <h1>Account Details</h1>
+            <h1 style="background-color: red;">Account Details</h1>
             <h2>Account Name: """+self.lbl_account_name.text()+"""</h2>
             <h3>Opening Balance: """+self.lbl_opening_balance.text()+"""</h3>
             <h4>Print Date: """+str(QDate.currentDate().toString('dd-MM-yyyy'))+"""</h4>
             """+html+"""
             </body>
             </html>"""
-            document.setHtml(html)
-            document.print_(printer)
+            # document.setHtml(html)
+            # document.print_(printer)
+            # pdf.from_string(html, 'accounts.pdf')
+            doc = QTextDocument()
+            doc.setHtml(html)
+            printer = QtPrintSupport.QPrinter()
+            printer.setOutputFileName(filename[0])
+            printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
+            printer.setPageSize(QtPrintSupport.QPrinter.A4)
+            printer.setPageMargins(15, 15, 15, 15, QtPrintSupport.QPrinter.Millimeter)
+
+            doc.print_(printer)
+            print("done!")
 
 
 
@@ -238,17 +246,17 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
     def search_table(self,id,search=None,type='all'):
         if type=='all':
             data= self.db.conn.execute(
-                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,remaining from roznamcha where accounts_id = {id} and (refrences like '%{search}%' or description like '%{search}%') "
+                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and (refrences like '%{search}%' or description like '%{search}%') "
             ).fetchall()
         elif type=='date':
             print("date")
             data= self.db.conn.execute(
-                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,remaining from roznamcha where accounts_id = {id} and date like '%{search}%'"
+                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date like '%{search}%'"
             ).fetchall()
             print(data)
         else:
             data= self.db.conn.execute(
-                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,remaining from roznamcha where accounts_id = {id}"
+                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id}"
                 ).fetchall()
         # print(len(data))
         # opening=0
