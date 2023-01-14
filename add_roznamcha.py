@@ -98,22 +98,22 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
                         values=f"'{self.khata_id}','{acccount_id}','{date}','Cash Out','{refrences}','{description}',{float(amount)},{float(remaing)}"
                         )
 
-                accounts_remaining=self.db.conn.execute(f"SELECT balance FROM accounts WHERE accounts_id={acccount_id}").fetchone()[0]
-                if accounts_remaining>=0:
-                    if cash_type=="Cash In":
-                        accounts_remaining+=amount
-                    else:
-                        accounts_remaining-=amount
-                else:
-                    if cash_type=="Cash In":
-                        accounts_remaining+=amount
-                    else:
-                        accounts_remaining-=amount
-                self.db.conn.execute(f"UPDATE accounts SET balance={accounts_remaining} WHERE accounts_id={acccount_id}")
-                if cash_type=="Cash In":
-                    self.db.conn.execute(f"INSERT INTO account_details (account_id,date,refrence,description,cash_in,remaining) VALUES ({acccount_id},'{date}','{refrences}','{description}',{amount},{accounts_remaining})")
-                else:
-                    self.db.conn.execute(f"INSERT INTO account_details (account_id,date,refrence,description,cash_out,remaining) VALUES ({acccount_id},'{date}','{refrences}','{description}',{amount},{accounts_remaining})")
+                # accounts_remaining=self.db.conn.execute(f"SELECT balance FROM accounts WHERE accounts_id={acccount_id}").fetchone()[0]
+                # if accounts_remaining>=0:
+                #     if cash_type=="Cash In":
+                #         accounts_remaining+=amount
+                #     else:
+                #         accounts_remaining-=amount
+                # else:
+                #     if cash_type=="Cash In":
+                #         accounts_remaining+=amount
+                #     else:
+                #         accounts_remaining-=amount
+                # self.db.conn.execute(f"UPDATE accounts SET balance={accounts_remaining} WHERE accounts_id={acccount_id}")
+                # if cash_type=="Cash In":
+                #     self.db.conn.execute(f"INSERT INTO account_details (account_id,date,refrence,description,cash_in,remaining) VALUES ({acccount_id},'{date}','{refrences}','{description}',{amount},{accounts_remaining})")
+                # else:
+                #     self.db.conn.execute(f"INSERT INTO account_details (account_id,date,refrence,description,cash_out,remaining) VALUES ({acccount_id},'{date}','{refrences}','{description}',{amount},{accounts_remaining})")
                 self.db.conn.commit()
                 QMessageBox.information(self,"Success","record added successully")
                 # self.close()

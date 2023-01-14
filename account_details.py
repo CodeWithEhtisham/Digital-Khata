@@ -23,10 +23,16 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         self.setupUi(self)
         self.account_id = id
         self.db= DBHandler()
+        self.opening=self.db.select(table_name='accounts',columns="balance",condition=f"accounts_id={self.account_id}")[0][0]
         self.update(self.account_id)
         self.lbl_account_name.setText(name)
         self.txt_search_date.setDate(QDate.currentDate())
         self.btn_refresh.clicked.connect(lambda: self.update(self.account_id))
+        self.lbl_opening_balance.setText(str(self.opening))
+
+
+
+
         self.account_details_table.setColumnWidth(0, 50)
         self.account_details_table.setColumnWidth(1, 120)
         self.account_details_table.setColumnWidth(2, 200)
@@ -178,11 +184,10 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
 
     def update(self,id):
         data= self.db.conn.execute(
-            f"SELECT account_details_id,date,refrence,description,cash_in,cash_out,remaining from account_details where account_id = {id}"
+            f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,remaining from roznamcha where accounts_id = {id}"
         ).fetchall()
-        print(len(data))
+        # print(len(data))
         if data:
-            opening=0
             remaing=0
             cash_in=0
             cash_out=0
@@ -190,19 +195,30 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             for row_number, row_data in enumerate(data):
                 cash_in+=row_data[4]
                 cash_out+=row_data[5]
-                if row_number == 0:
-                    opening = row_data[6]
-                elif row_number ==len(data)-1:
+                if row_number ==len(data)-1:
                     remaing = row_data[6]
                 self.account_details_table.insertRow(row_number)
                 for column_number, value in enumerate(row_data):
                     self.account_details_table.setItem(row_number, column_number, QTableWidgetItem(str(value)))
                 self.account_details_table.item(row_number,4).setForeground(QColor(0,255,0))
                 self.account_details_table.item(row_number,5).setForeground(QColor(255,0,0))
-            self.lbl_opening_balance.setText(str(opening))
+            # self.lbl_opening_balance.setText(str(opening))
             self.lbl_total_cash_In.setText(str(cash_in))
             self.lbl_total_cash_out.setText(str(cash_out))
-            self.lbl_remaining.setText(str(remaing))
+            opening=self.opening
+            print(opening)
+            if opening>=0 and remaing>=0:
+                self.lbl_remaining.setText(str(float(opening)+float(remaing)))
+            elif opening<0 and remaing>=0:
+                self.lbl_remaining.setText(str(float(opening)-float(remaing)))
+            elif opening>=0 and remaing<0:
+                self.lbl_remaining.setText(str(float(opening)-float(remaing)))
+            else:
+                self.lbl_remaining.setText(str(float(opening)+float(remaing)))
+
+
+
+
             if cash_in < 0:
                 self.lbl_total_cash_In.setStyleSheet("color: red")
             else:
