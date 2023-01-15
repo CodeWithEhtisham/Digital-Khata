@@ -347,7 +347,7 @@
             </property>
             <item>
              <property name="text">
-              <string>Select Khata</string>
+              <string>Select Business</string>
              </property>
             </item>
            </widget>
@@ -1405,6 +1405,39 @@
                 </property>
                </widget>
               </item>
+              <item alignment="Qt::AlignRight">
+               <widget class="QLabel" name="label_7">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Net Balance</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_net_balance">
+                <property name="font">
+                 <font>
+                  <family>Calibri</family>
+                  <pointsize>16</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="frameShape">
+             <enum>QFrame::Box</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+                <property name="text">
+                 <string>00</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -2216,6 +2249,39 @@
                 </property>
                </widget>
               </item>
+              <item alignment="Qt::AlignRight">
+               <widget class="QLabel" name="label_5">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Remaining Balance</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_total_rem_balance">
+                <property name="font">
+                 <font>
+                  <family>Calibri</family>
+                  <pointsize>16</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="frameShape">
+             <enum>QFrame::Box</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+                <property name="text">
+                 <string>00</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -2368,7 +2434,7 @@ QFrame {
               </font>
              </property>
              <property name="text">
-              <string>Add Khata</string>
+              <string>Add Business</string>
              </property>
              <property name="icon">
               <iconset resource="../resources.qrc">

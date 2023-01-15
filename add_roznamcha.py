@@ -57,8 +57,6 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
         self.txt_description.setText('')
         self.txt_amount.setText('')
         
-    
-    
 
     def save_roznamcha(self):
         date=self.txt_date.text()

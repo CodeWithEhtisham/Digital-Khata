@@ -240,6 +240,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
             QMessageBox.information(self, "Success", "PDF Saved Successfully")
 
     def update_account_table(self, data):
+        net_balance = 0
         payable = 0
         receivable = 0
         if data:
@@ -263,6 +264,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
             self.lbl_total_receivable.setText(str(f"{int(receivable):,}"))
             self.lbl_total_payable.setText(str(f"{int(payable):,}"))
+            self.lbl_net_balance.setText(str(net_balance))
             self.lbl_total_accounts.setText(str(len(data)))
 
             # self.accounts_table.item(
@@ -283,7 +285,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
     def search_accounts(self):
         search = self.txt_search.text()
-        if self.khata_options.currentText() != "Select Khata":
+        if self.khata_options.currentText() != "Select Business":
             if self.khata_options.currentText() == "":
                 self.update()
                 return
@@ -298,7 +300,6 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
     def search_roznamcha(self, search, type="all"):
         if search == "":
-            print(search, "empty")
             self.update()
             return
         if type == "all":
@@ -312,7 +313,8 @@ class MainWindow(QMainWindow, FORM_MAIN):
         else:
             self.update()
             return
-
+        
+        total_rem_balance = 0
         cash_in = 0
         cash_out = 0
         self.roznamcha_table.setRowCount(0)
@@ -320,6 +322,8 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.roznamcha_table.insertRow(index)
             cash_in += row[6]
             cash_out += row[7]
+            if index == len(data)-1:
+                total_rem_balance = row[8]
             for idx, i in enumerate(row):
                 self.roznamcha_table.setItem(
                     index, idx, QTableWidgetItem(str(i)))
@@ -330,11 +334,11 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
         self.lbl_total_cash_In.setText(str(cash_in))
         self.lbl_total_cash_out.setText(str(cash_out))
+        self.lbl_total_rem_balance.setText(str(total_rem_balance))
         self.lbl_total_cash_In.setStyleSheet("color: green")
         self.lbl_total_cash_out.setStyleSheet("color: red")
 
     def update(self):
-        print("close call roznamcaha")
         data = self.db.select(table_name='business',
                               columns="*", condition="id=1")
         if data:
@@ -343,29 +347,29 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.lbl_business_address.setText(data[0][3])
 
         # khata table
-        if self.khata_options.currentText() != "Select Khata":
+        if self.khata_options.currentText() != "Select Business":
             data = self.db.select(table_name='accounts', columns="accounts_id,name,phone,address,balance",
                                   condition=f"khata_id={self.get_khata_id(self.khata_options.currentText())}")
-
             if data:
                 self.update_account_table(data=data)
         else:
             self.accounts_table.setRowCount(0)
 
         # roznamcha table
-        if self.khata_options.currentText() != "Select Khata":
+        if self.khata_options.currentText() != "Select Business":
             previous_day = QDate.currentDate().addDays(-1).toString('dd/MM/yyyy')
             last_id = self.db.conn.execute(
                 f"SELECT r.roznamcha_id FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{previous_day}'").fetchall()
             if last_id:
                 last_id = last_id[-1][0]
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}")
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}").fetchall()
             else:
                 data = self.db.conn.execute(
                     f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}'").fetchall()
 
             if data:
+                total_rem_balance = 0
                 cash_in = 0
                 cash_out = 0
                 self.roznamcha_table.setRowCount(0)
@@ -373,6 +377,8 @@ class MainWindow(QMainWindow, FORM_MAIN):
                     self.roznamcha_table.insertRow(index)
                     cash_in += row[6]
                     cash_out += row[7]
+                    if index == len(data)-1:
+                        total_rem_balance = row[8]
                     for idx, i in enumerate(row):
                         self.roznamcha_table.setItem(
                             index, idx, QTableWidgetItem(str(i)))
@@ -382,6 +388,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
                         index, 7).setForeground(QColor(255, 0, 0))
                 self.lbl_total_cash_In.setText(str(cash_in))
                 self.lbl_total_cash_out.setText(str(cash_out))
+                self.lbl_total_rem_balance.setText(str(total_rem_balance))
                 self.lbl_total_cash_In.setStyleSheet("color: green")
                 self.lbl_total_cash_out.setStyleSheet("color: red")
             else:
@@ -400,7 +407,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
         data = self.db.select_all(table_name='khata', columns="khata_name")
         if data:
             self.khata_options.clear()
-            self.khata_options.addItem("Select Khata")
+            self.khata_options.addItem("Select Business")
             self.khata_options.addItems([i[0] for i in data])
 
     def logout(self):
@@ -411,7 +418,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
     def get_khata(self):
         khata = self.khata_options.currentText()
-        if khata != "Select Khata":
+        if khata != "Select Business":
             self.lbl_user_khata.setText(khata)
             self.update()
 
@@ -420,7 +427,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.update()
 
     def get_khata_id(self, name):
-        if name != "Select Khata":
+        if name != "Select Business":
             return self.db.select(table_name='khata', columns="khata_id", condition=f"khata_name='{name}'")[0][0]
         # return self.db.select(table_name='khata',columns="khata_id",condition=f"khata_name='{name}'")[0][0]
 
@@ -436,9 +443,9 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
             else:
                 QMessageBox.warning(
-                    self, "warning", f"Please Select Khata {e}")
+                    self, "warning", f"Please Select Business {e}")
         except Exception as e:
-            QMessageBox.warning(self, "Error", f"Please Select Khata {e}")
+            QMessageBox.warning(self, "Error", f"Please Select Business {e}")
 
     def add_khata(self):
         self.window = KhataWindow()
@@ -458,9 +465,9 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
             else:
                 QMessageBox.warning(
-                    self, "warning", f"Please Select Khata {e}")
+                    self, "warning", f"Please Select Business {e}")
         except Exception as e:
-            QMessageBox.warning(self, "Error", f"Please Select Khata {e}")
+            QMessageBox.warning(self, "Error", f"Please Select Business {e}")
 
     def update_table(self, data, obj):
         obj.setRowCount(0)

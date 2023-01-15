@@ -46,6 +46,16 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
         self.btn_update.clicked.connect(self.update_roznamcha)
         self.btn_clear.clicked.connect(self.delete_roznamcha)
         self.btn_cancel.clicked.connect(self.close)
+        self.txt_amount.textChanged.connect(self.add_comma_separator)
+
+    def add_comma_separator(self):
+        amount = self.txt_amount.text()
+        if amount != '':
+            amount = amount.replace(',', '')
+            amount = int(amount)
+            amount = "{:,}".format(amount)
+            self.txt_amount.setText(amount)
+            self.txt_amount.setCursorPosition(len(amount))
 
     def previous_calculation(self,previous_balance,amount,cash_type):
         if previous_balance>=0:
@@ -78,9 +88,9 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
             date=self.txt_date.text()
             cash_type=self.cashInOut_option.currentText()
             refrences=self.txt_reference.text()
-            # description=self.txt_description.text()
-            description = "account update"
-            amount=float(self.txt_amount.text())
+            description=self.txt_description.text()
+            amount = self.txt_amount.text().replace(',', '')
+            amount = float(amount)
 
 
             previous_balance=self.previous_calculation(previous_balance,amount,cash_type)
@@ -122,7 +132,7 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
     def delete_roznamcha(self):
         try:
             # ask user yes or no before detele
-            ret = QMessageBox.question(self,'', "Are you sure to reset all the values?", QMessageBox.Yes | QMessageBox.No)
+            ret = QMessageBox.question(self,'', "Are You sure to Delete the Entry?", QMessageBox.Yes | QMessageBox.No)
             if ret==QMessageBox.Yes:
                 account_id = self.db.conn.execute(f"SELECT accounts_id FROM accounts WHERE name='{self.names_list_option.currentText()}'").fetchone()[0]
                 record = self.db.conn.execute(f"SELECT * FROM roznamcha WHERE roznamcha_id>={self.roznamcha_id} and khata_id={self.khata_id}").fetchall()
@@ -161,7 +171,7 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
                     self.db.conn.commit()
 
                 
-                QMessageBox.information(self, "Success", "Roznamcha Deleted Successfully")
+                QMessageBox.information(self, "Success", "Entry Deleted Successfully")
                 self.close()
             else:
                 self.close()

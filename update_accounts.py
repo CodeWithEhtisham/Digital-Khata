@@ -43,7 +43,16 @@ class UpdateAccountsWindow(QMainWindow, FORM_MAIN):
     def Handle_Buttons(self):
         self.btn_save.clicked.connect(self.update_account)
         self.btn_cancel.clicked.connect(self.close)
+        self.txt_balance.textChanged.connect(self.add_comma_separator)
 
+    def add_comma_separator(self):
+        balance = self.txt_balance.text()
+        if balance != '':
+            balance = balance.replace(',', '')
+            balance = int(balance)
+            balance = "{:,}".format(balance)
+            self.txt_balance.setText(balance)
+            self.txt_balance.setCursorPosition(len(balance))
 
     def update_account(self):
         try:
@@ -51,9 +60,10 @@ class UpdateAccountsWindow(QMainWindow, FORM_MAIN):
             phone=self.txt_mobile.text()
             address=self.txt_address.text()
             balance_type=self.select_balance_type.currentText()
-            balance=float(self.txt_balance.text())
+            balance = self.txt_balance.text().replace(',', '')
+            balance = float(balance)
             if balance_type == 'Payable':
-                balance=balance
+                balance= balance
             else:
                 balance= -balance
             # self.select_balance_type.setCurrentText(1)
