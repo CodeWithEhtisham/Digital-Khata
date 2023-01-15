@@ -27,15 +27,26 @@ class AddAccountsWindow(QMainWindow, FORM_MAIN):
         self.btn_save.clicked.connect(self.save_account)
         self.btn_clear.clicked.connect(self.clear_fields)
         self.btn_cancel.clicked.connect(self.close)
+        self.txt_balance.textChanged.connect(self.add_comma_separator)
+    
+    def add_comma_separator(self):
+        balance = self.txt_balance.text()
+        if balance != '':
+            balance = balance.replace(',', '')
+            balance = int(balance)
+            balance = "{:,}".format(balance)
+            self.txt_balance.setText(balance)
+            self.txt_balance.setCursorPosition(len(balance))
 
     def save_account(self):
         name=self.txt_name.text()
         phone=self.txt_mobile.text()
         address=self.txt_address.text()
         balance_type=self.select_balance_type.currentText()
-        balance=self.txt_balance.text()
+        balance = self.txt_balance.text().replace(',', '')
+        balance=float(balance)
 
-        if name != '' and phone != '' and address != '' and balance_type != '' and balance != '':
+        if name != '' and phone != '' and balance_type != '' and balance != '':
             try:
                 if balance_type == 'Payable':
                     balance = float(balance)

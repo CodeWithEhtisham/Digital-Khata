@@ -65,6 +65,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.btn_add_khata.clicked.connect(self.add_khata)
         self.btn_add_accounts.clicked.connect(self.add_accounts)
         self.btn_print_RN.clicked.connect(self.print_roznamcha_table_pdf)
+        self.btn_print_accounts.clicked.connect(self.print_accounts_table_pdf)
 
         # tables double clicked
         self.accounts_table.doubleClicked.connect(self.account_details)
@@ -91,7 +92,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
     def update_account(self):
         id = self.accounts_table.item(
             self.accounts_table.currentRow(), 0).text()
-        self.window_update= UpdateAccountsWindow(id)
+        self.window_update = UpdateAccountsWindow(id)
         self.window_update.show()
         self.window_update.btn_save.clicked.connect(self.update)
         # self.window = AccountDetailsWindow(id, name)
@@ -104,7 +105,71 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.update_roznamcha.show()
         self.update_roznamcha.btn_update.clicked.connect(self.update)
         self.update_roznamcha.btn_clear.clicked.connect(self.update)
-
+    
+    def print_accounts_table_pdf(self):
+        filename = QFileDialog.getSaveFileName(
+            self, "Save File", "", "PDF(*.pdf)")
+        if filename[0]:
+            printer = QtPrintSupport.QPrinter(
+                QtPrintSupport.QPrinter.PrinterResolution)
+            printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
+            printer.setPaperSize(QtPrintSupport.QPrinter.A4)
+            printer.setOrientation(QtPrintSupport.QPrinter.Portrait)
+            printer.setOutputFileName(filename[0])
+            document = QtGui.QTextDocument()
+            html = """
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <style>
+                .td:nth-child(7) {
+                    color: green;
+                }
+                .td:nth-child(8) {
+                    color: red;
+                }
+            </style>
+            </head>
+            
+            <body>
+                <h1 style="text-align: center;"> """ + self.lbl_business_name.text() + """</h1>
+                <h2 style="text-align: right; font-weight: 400;">Contact : """ + self.lbl_business_contact.text() + """</h2>
+                <h1 style="text-align: center;">Accounts</h1>
+                <h3 style="text-align: right;"> Total Accounts : <span> """ + self.lbl_total_accounts.text() + """</span></h3>
+                <h3 style="text-align: right;"> Payable Balance : <span style=" color: green;"> """ + self.lbl_total_payable.text() + """</span></h3>
+                <h3 style="text-align: right;"> Receivable Balance : <span style=" color: red;"> """ + self.lbl_total_receivable.text() + """</span></h3>
+                <h3 style="text-align: left;">Print Date: """+str(QDate.currentDate().toString('dd-MM-yyyy'))+"""</h3>
+                <table style="border-bottom: 1px solid gray;
+                    border-collapse: collapse;
+                    width: 100%;">
+                    <thead style="width: 100%;">
+                        <tr style="background-color: #29b6f6; font-size: 10px; width: 100%;">
+                            <th style="padding: 4px; text-align: left;">S/NO</th>
+                            <th style="padding: 4px; text-align: left;">Name</th>
+                            <th style="padding: 4px; text-align: left;">Mobile</th>
+                            <th style="padding: 4px; text-align: left;">Address</th>
+                            <th style="padding: 4px; text-align: left;">Remaining Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size: 10px; width: 100%;">
+                    """
+            for i in range(self.accounts_table.rowCount()):
+                html += "<tr>"
+                for j in range(self.accounts_table.columnCount()):
+                    html += """<td style="padding: 4px; text-align: left;">""" + \
+                        self.accounts_table.item(i, j).text()+"</td>"
+                html += "</tr>"
+            html += """
+                    </tbody>
+    
+                </table>
+            
+            </body>
+            </html>
+            """
+            document.setHtml(html)
+            document.print_(printer)
+            QMessageBox.information(self, "Success", "PDF Saved Successfully")
 
     def print_roznamcha_table_pdf(self):
         filename = QFileDialog.getSaveFileName(
@@ -114,7 +179,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
                 QtPrintSupport.QPrinter.PrinterResolution)
             printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
             printer.setPaperSize(QtPrintSupport.QPrinter.A4)
-            printer.setOrientation(QtPrintSupport.QPrinter.Landscape)
+            printer.setOrientation(QtPrintSupport.QPrinter.Portrait)
             printer.setOutputFileName(filename[0])
             document = QtGui.QTextDocument()
             html = """
@@ -122,73 +187,44 @@ class MainWindow(QMainWindow, FORM_MAIN):
             <html lang="en">
             <head>
             <style>
-                body {
-                    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-                }
-                table,
-                th,
-                td {
-                    border-bottom: 1px solid gray;
-                    border-collapse: collapse;
-                }
-                th,
-                td {
-                    padding: 10px 2px;
-                    text-align: left;
-                }
-                td:nth-child(7) {
+                .td:nth-child(7) {
                     color: green;
                 }
-                td:nth-child(8) {
+                .td:nth-child(8) {
                     color: red;
-                }
-                thead {
-                    background-color: #29b6f6;
-                    font-size: 20px;
-                    font-weight: 700;
-                }
-                tbody {
-                    font-size: 18px;
-                    font-weight: 600;
-                }
-                h1 {
-                    text-align: center;
-                }
-                h2 {
-                    text-align: right;
                 }
             </style>
             </head>
             
             <body>
-                <div>
-                    <h1>Business Name</h1>
-                    <h2>Business Contact</h2>
-                </div>
-                <div>
-                    <h1>Roznamcha</h1>
-                    <h2>Balance</h2>
-                </div>
-                <table style="width:100%">
+                <h1 style="text-align: center;"> """ + self.lbl_business_name.text() + """</h1>
+                <h2 style="text-align: right; font-weight: 400;">Contact : """ + self.lbl_business_contact.text() + """</h2>
+                <h1 style="text-align: center;">Roznamcha</h1>
+                <h3 style="text-align: right;"> Cash In : <span style=" color: green;"> """ + self.lbl_total_cash_In.text() + """</span></h3>
+                <h3 style="text-align: right;"> Cash Out : <span style=" color: red;"> """ + self.lbl_total_cash_out.text() + """</span></h3>
+                <h3 style="text-align: left;">Print Date: """+str(QDate.currentDate().toString('dd-MM-yyyy'))+"""</h3>
+                <table style="border-bottom: 1px solid gray;
+                    border-collapse: collapse;
+                    width: 100%;">
                     <thead>
-                        <tr>
-                            <th>S/NO</th>
-                            <th>Date</th>
-                            <th>Cash IN/Out</th>
-                            <th>Name</th>
-                            <th>Refrence</th>
-                            <th>Description</th>
-                            <th>Cash In</th>
-                            <th>Cash Out</th>
-                            <th>Remaining</th>
+                        <tr style="background-color: #29b6f6; font-size: 10px;">
+                            <th style="padding: 4px; text-align: left;">S/NO</th>
+                            <th style="padding: 4px; text-align: left;">Date</th>
+                            <th style="padding: 4px; text-align: left;">Cash IN/Out</th>
+                            <th style="padding: 4px; text-align: left;">Name</th>
+                            <th style="padding: 4px; text-align: left;">Refrence</th>
+                            <th style="padding: 4px; text-align: left;">Description</th>
+                            <th style="padding: 4px; text-align: left;">Cash In</th>
+                            <th style="padding: 4px; text-align: left;">Cash Out</th>
+                            <th style="padding: 4px; text-align: left;">Remaining</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="font-size: 10px;">
                     """
             for i in range(self.roznamcha_table.rowCount()):
                 html += "<tr>"
                 for j in range(self.roznamcha_table.columnCount()):
-                    html += "<td>" + \
+                    html += """<td style="padding: 4px; text-align: left;">""" + \
                         self.roznamcha_table.item(i, j).text()+"</td>"
                 html += "</tr>"
             html += """
@@ -203,8 +239,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
             document.print_(printer)
             QMessageBox.information(self, "Success", "PDF Saved Successfully")
 
-
-    def update_account_table(self,data):
+    def update_account_table(self, data):
         payable = 0
         receivable = 0
         if data:
@@ -212,17 +247,19 @@ class MainWindow(QMainWindow, FORM_MAIN):
             for index, row in enumerate(data):
                 self.accounts_table.insertRow(index)
                 for idx, i in enumerate(row):
-                    if idx == 4 and i >=0:
-                        payable+=i
+                    if idx == 4 and i >= 0:
+                        payable += i
                     elif idx == 4 and i < 0:
-                        receivable+=i
+                        receivable += i
                     if idx == len(row)-1:
-                        accounts_last_balance = self.db.conn.execute(f"SELECT accounts_remaining FROM roznamcha WHERE accounts_id={row[0]} ORDER BY roznamcha_id DESC LIMIT 1").fetchone()
+                        accounts_last_balance = self.db.conn.execute(
+                            f"SELECT accounts_remaining FROM roznamcha WHERE accounts_id={row[0]} ORDER BY roznamcha_id DESC LIMIT 1").fetchone()
                         if accounts_last_balance:
                             i = accounts_last_balance[0]
                     if type(i) == float or type(i) == int:
-                        i=f"{int(i):,}"
-                    self.accounts_table.setItem(index, idx, QTableWidgetItem(str(i)))
+                        i = f"{int(i):,}"
+                    self.accounts_table.setItem(
+                        index, idx, QTableWidgetItem(str(i)))
 
             self.lbl_total_receivable.setText(str(f"{int(receivable):,}"))
             self.lbl_total_payable.setText(str(f"{int(payable):,}"))
@@ -403,8 +440,6 @@ class MainWindow(QMainWindow, FORM_MAIN):
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Please Select Khata {e}")
 
-
-
     def add_khata(self):
         self.window = KhataWindow()
         self.window.show()
@@ -420,7 +455,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
                 self.roznamcha_window.btn_save.clicked.connect(self.update)
                 self.roznamcha_window.btn_cancel.clicked.connect(self.update)
                 self.roznamcha_window.btn_clear.clicked.connect(self.update)
-                
+
             else:
                 QMessageBox.warning(
                     self, "warning", f"Please Select Khata {e}")
