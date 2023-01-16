@@ -84,7 +84,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.txt_search_RN.textChanged.connect(
             lambda: self.search_roznamcha(self.txt_search_RN.text()))
         self.btn_search_RN.clicked.connect(
-            lambda: self.search_roznamcha(self.txt_search_RN.text(), "date"))
+            lambda:self.search_roznamcha(self.txt_search_RN.text(), "date"))
         self.btn_refresh_RN.clicked.connect(self.update)
         self.btn_refresh_accounts.clicked.connect(self.update)
         self.txt_search.textChanged.connect(self.search_accounts)
@@ -240,15 +240,15 @@ class MainWindow(QMainWindow, FORM_MAIN):
             QMessageBox.information(self, "Success", "PDF Saved Successfully")
 
     def update_account_table(self, data):
-        net_balance = 0
         payable = 0
         receivable = 0
         if data:
             self.accounts_table.setRowCount(0)
             for index, row in enumerate(data):
+                print(row)
                 self.accounts_table.insertRow(index)
                 for idx, i in enumerate(row):
-                    if idx == 4 and i >= 0:
+                    if idx == 4 and i > 0:
                         payable += i
                     elif idx == 4 and i < 0:
                         receivable += i
@@ -257,6 +257,10 @@ class MainWindow(QMainWindow, FORM_MAIN):
                             f"SELECT accounts_remaining FROM roznamcha WHERE accounts_id={row[0]} ORDER BY roznamcha_id DESC LIMIT 1").fetchone()
                         if accounts_last_balance:
                             i = accounts_last_balance[0]
+                            if i >= 0:
+                                payable += i
+                            else:
+                                receivable += i
                     if type(i) == float or type(i) == int:
                         i = f"{int(i):,}"
                     self.accounts_table.setItem(
@@ -264,8 +268,9 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
             self.lbl_total_receivable.setText(str(f"{int(receivable):,}"))
             self.lbl_total_payable.setText(str(f"{int(payable):,}"))
-            self.lbl_net_balance.setText(str(net_balance))
+            self.lbl_net_balance.setText(str(f"{int(receivable+payable):,}"))
             self.lbl_total_accounts.setText(str(len(data)))
+
 
             # self.accounts_table.item(
             #     index, 7).setForeground(QColor(255, 0, 0))
@@ -299,17 +304,20 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.accounts_table.setRowCount(0)
 
     def search_roznamcha(self, search, type="all"):
-        if search == "":
-            self.update()
-            return
-        if type == "all":
+        # if search == "" and type != "date":
+        #     self.update()
+        #     return
+        if type == "all" and search != "":
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and a.name LIKE '%{search}%' or r.description LIKE '%{search}%' or r.refrences LIKE '%{search}%'").fetchall()
         elif type == "date":
-            from_date = self.txt_date_from_RN.text()
-            to_date = self.txt_date_to_RN.text()
+            print("date")
+            from_date = self.txt_date_from_RN.date().toString("dd/MM/yyyy")
+            to_date = self.txt_date_to_RN.date().toString("dd/MM/yyyy")
+            
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}'").fetchall()
+            print(data)
         else:
             self.update()
             return

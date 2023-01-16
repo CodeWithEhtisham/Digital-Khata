@@ -59,7 +59,7 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
         
 
     def save_roznamcha(self):
-        date=self.txt_date.text()
+        date=self.txt_date.date().toString("dd/MM/yyyy")
         cash_type=self.cashInOut_option.currentText()
         name=self.names_list_option.currentText()
         refrences=self.txt_reference.text()

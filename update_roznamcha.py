@@ -85,7 +85,7 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
                 account_previous_balance = 0
             else:
                 account_previous_balance = float(account_previous_balance[0])
-            date=self.txt_date.text()
+            date=self.txt_date.date().toString('dd/MM/yyyy')
             cash_type=self.cashInOut_option.currentText()
             refrences=self.txt_reference.text()
             description=self.txt_description.text()

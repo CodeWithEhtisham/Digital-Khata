@@ -38,7 +38,7 @@ class UpdateAccountsWindow(QMainWindow, FORM_MAIN):
         else:
             self.select_balance_type.setCurrentIndex(1)
         # self.select_balance_type.setCurrentText(1)
-        self.txt_balance.setText(str(record[-1]))
+        self.txt_balance.setText(str(abs(int(record[-1]))))
 
     def Handle_Buttons(self):
         self.btn_save.clicked.connect(self.update_account)
