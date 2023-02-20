@@ -245,7 +245,6 @@ class MainWindow(QMainWindow, FORM_MAIN):
         if data:
             self.accounts_table.setRowCount(0)
             for index, row in enumerate(data):
-                print(row)
                 self.accounts_table.insertRow(index)
                 for idx, i in enumerate(row):
                     if idx == 4 and i > 0:
@@ -311,13 +310,11 @@ class MainWindow(QMainWindow, FORM_MAIN):
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and a.name LIKE '%{search}%' or r.description LIKE '%{search}%' or r.refrences LIKE '%{search}%'").fetchall()
         elif type == "date":
-            print("date")
             from_date = self.txt_date_from_RN.date().toString("dd/MM/yyyy")
             to_date = self.txt_date_to_RN.date().toString("dd/MM/yyyy")
             
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}'").fetchall()
-            print(data)
         else:
             self.update()
             return

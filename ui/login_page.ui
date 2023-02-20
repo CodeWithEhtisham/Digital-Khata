@@ -35,6 +35,7 @@
 
 #label {
 	background-color: #80cbc4;
+	padding: 10px;
 }
 
 #label_5 {
@@ -123,13 +124,13 @@ QTextEdit {
        </font>
       </property>
       <property name="text">
-       <string>Login</string>
+       <string>Login Here</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
       <property name="margin">
-       <number>10</number>
+       <number>0</number>
       </property>
      </widget>
     </item>
@@ -154,7 +155,7 @@ QTextEdit {
              </font>
             </property>
             <property name="text">
-             <string>User</string>
+             <string>Username *</string>
             </property>
            </widget>
           </item>
@@ -167,7 +168,7 @@ QTextEdit {
              </font>
             </property>
             <property name="text">
-             <string>Password</string>
+             <string>Password *</string>
             </property>
            </widget>
           </item>
@@ -233,7 +234,20 @@ QTextEdit {
       </layout>
      </widget>
     </item>
-    <item>
+    <item alignment="Qt::AlignHCenter">
+     <widget class="QCheckBox" name="show_password">
+      <property name="font">
+       <font>
+        <family>Calibri</family>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Show Password</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignBottom">
      <widget class="QWidget" name="bottom_widget" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="spacing">
@@ -332,7 +346,7 @@ QTextEdit {
       </layout>
      </widget>
     </item>
-    <item>
+    <item alignment="Qt::AlignBottom">
      <widget class="QFrame" name="frame_3">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -361,7 +375,7 @@ QTextEdit {
          <property name="font">
           <font>
            <family>Calibri</family>
-           <pointsize>12</pointsize>
+           <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -376,13 +390,13 @@ QTextEdit {
          <property name="font">
           <font>
            <family>Calibri</family>
-           <pointsize>12</pointsize>
+           <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>Software Developed</string>
+          <string>Powered By: ComPy Softwares Quetta</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

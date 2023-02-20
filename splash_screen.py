@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'splash_screenXBSmkq.ui'
-##
-## Created by: Qt User Interface Compiler version 5.14.1
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
 
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
     QRect, QSize, QUrl, Qt)
@@ -83,8 +74,8 @@ class Ui_SplashScreen(object):
         self.label_credits.setObjectName(u"label_credits")
         self.label_credits.setGeometry(QRect(20, 350, 621, 21))
         font3 = QFont()
-        font3.setFamily(u"Segoe UI")
-        font3.setPointSize(10)
+        font3.setFamily(u"Calibri")
+        font3.setPointSize(14)
         self.label_credits.setFont(font3)
         self.label_credits.setStyleSheet(u"color: rgb(98, 114, 164);")
         self.label_credits.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
@@ -103,6 +94,4 @@ class Ui_SplashScreen(object):
         self.label_title.setText(QCoreApplication.translate("SplashScreen", u"<strong>Digital</strong> Khata", None))
         self.label_description.setText(QCoreApplication.translate("SplashScreen", u"<strong>APP</strong> DESCRIPTION", None))
         self.label_loading.setText(QCoreApplication.translate("SplashScreen", u"loading...", None))
-        self.label_credits.setText(QCoreApplication.translate("SplashScreen", u"<strong>Created</strong>: SAM & CODERS", None))
-    # retranslateUi
-
+        self.label_credits.setText(QCoreApplication.translate("SplashScreen", u"Powered By: <strong>ComPy Softwares Quetta</strong>", None))
