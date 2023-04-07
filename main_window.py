@@ -49,6 +49,9 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.roznamcha_table.setColumnWidth(5, 190)
         self.roznamcha_table.setColumnWidth(6, 160)
         self.roznamcha_table.setColumnWidth(7, 160)
+        
+        # 
+        self.btn_change_business_details.hide()
 
     def Handle_Buttons(self):
         self.btn_home.clicked.connect(self.home)
@@ -337,9 +340,9 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.roznamcha_table.item(
                 index, 7).setForeground(QColor(255, 0, 0))
 
-        self.lbl_total_cash_In.setText(str(cash_in))
-        self.lbl_total_cash_out.setText(str(cash_out))
-        self.lbl_total_rem_balance.setText(str(total_rem_balance))
+        self.lbl_total_cash_In.setText(str(f"{cash_in:,}"))
+        self.lbl_total_cash_out.setText(str(f"{cash_out:,}"))
+        self.lbl_total_rem_balance.setText(str(f"{total_rem_balance:,}"))
         self.lbl_total_cash_In.setStyleSheet("color: green")
         self.lbl_total_cash_out.setStyleSheet("color: red")
 
@@ -391,9 +394,9 @@ class MainWindow(QMainWindow, FORM_MAIN):
                         index, 6).setForeground(QColor(0, 255, 0))
                     self.roznamcha_table.item(
                         index, 7).setForeground(QColor(255, 0, 0))
-                self.lbl_total_cash_In.setText(str(cash_in))
-                self.lbl_total_cash_out.setText(str(cash_out))
-                self.lbl_total_rem_balance.setText(str(total_rem_balance))
+                self.lbl_total_cash_In.setText(str(f"{cash_in:,}"))
+                self.lbl_total_cash_out.setText(str(f"{cash_out:,}"))
+                self.lbl_total_rem_balance.setText(str(f"{total_rem_balance:,}"))
                 self.lbl_total_cash_In.setStyleSheet("color: green")
                 self.lbl_total_cash_out.setStyleSheet("color: red")
             else:
@@ -530,6 +533,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.txt_business_address.setText(data[0][3])
             self.txt_business_owner.setText(data[0][5])
             self.btn_business_details.hide()
+            self.btn_change_business_details.show()
 
 
 def main():

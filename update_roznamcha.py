@@ -20,6 +20,7 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.db= DBHandler()
+        
         self.roznamcha_id = roznamcha_id
         self.khata_id = self.db.conn.execute(f"SELECT khata_id FROM roznamcha WHERE roznamcha_id={self.roznamcha_id}").fetchone()[0]
         self.Handle_Buttons()

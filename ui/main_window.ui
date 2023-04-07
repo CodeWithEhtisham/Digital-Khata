@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SAM Digital Khata</string>
+   <string>ComPy Softwares - Digital Khata</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
@@ -598,7 +598,7 @@
               </font>
              </property>
              <property name="text">
-              <string>SAM and SHAMI Coding Hub</string>
+              <string>ComPy Softwares Quetta</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

@@ -46,6 +46,7 @@ class NewBusinessWindow(QMainWindow, FORM_MAIN):
                 QMessageBox.information(self, 'Success', 'Business Added Successfully')
                 db.close()
                 self.close()
+                
             except Exception:
                 QMessageBox.warning(self, 'Error', 'Business Not Added')
 
