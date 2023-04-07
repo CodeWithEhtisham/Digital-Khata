@@ -53,7 +53,8 @@ class CreateUserWindow(QMainWindow, FORM_MAIN):
                 self.login = LoginWindow()
                 self.login.show()
                 self.close_window()
-            except:
+            except Exception as e:
+                print("error in creating user",e)
                 QMessageBox.information(self.centralwidget, "Info", "User has not been created")
         else:
             QMessageBox.information(self, "Info", "Fields cannot be empty")

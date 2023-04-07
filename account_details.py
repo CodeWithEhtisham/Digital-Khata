@@ -27,7 +27,8 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             table_name='accounts', columns="balance", condition=f"accounts_id={self.account_id}")[0][0]
         self.search_table(self.account_id, type='start')
         self.lbl_account_name.setText(name)
-        self.txt_search_date.setDate(QDate.currentDate())
+        self.from_date.setDate(QDate.currentDate())
+        self.to_date.setDate(QDate.currentDate())
         self.btn_refresh.clicked.connect(
             lambda: self.search_table(self.account_id, type='start'))
         self.lbl_opening_balance.setText(str(f"{float(self.opening):,}"))
@@ -39,8 +40,10 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         self.account_details_table.setColumnWidth(6, 100)
         self.txt_search.textChanged.connect(
             lambda: self.search_table(self.account_id, self.txt_search.text()))
-        self.txt_search_date.dateChanged.connect(lambda: self.search_table(
-            self.account_id, self.txt_search_date.text(), 'date'))
+        self.btn_search.clicked.connect(lambda: self.search_table(
+            self.account_id, self.from_date.text(), 'date'))
+        # self.to_date.dateChanged.connect(lambda: self.search_table(
+        #     self.account_id, self.to_date.text(), 'date'))
         self.btn_print.clicked.connect(self.print_accounts_table_pdf)
     
     def print_accounts_table_pdf(self):
@@ -113,181 +116,6 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             QMessageBox.information(self, "Success", "PDF Saved Successfully")
 
 
-
-    # def print_accounts_table_pdf(self):
-    #     filename = QFileDialog.getSaveFileName(
-    #         self, "Save File", "", "PDF(*.pdf)")
-    #     if filename[0]:
-    #         # printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.PrinterResolution)
-    #         # printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
-    #         # printer.setFullPage(True)
-    #         # printer.setOrientation(QtPrintSupport.QPrinter.Landscape)
-    #         # # table not print correctly in pdf
-    #         # printer.setPaperSize(QSizeF(self.account_details_table.width(), self.account_details_table.height()), QtPrintSupport.QPrinter.DevicePixel)
-
-    #         # printer.setOutputFileName(filename[0])
-    #         # doc = QtGui.QTextDocument()
-
-    #         # convert qtwidgettable to pandas dataframe
-    #         df = pd.DataFrame(
-    #             # first row is header
-    #             [[self.account_details_table.horizontalHeaderItem(column).text() for column in range(self.account_details_table.columnCount())]] +
-    #             # rest of the rows
-    #             [[self.account_details_table.item(row, column).text() for column in range(
-    #                 self.account_details_table.columnCount())] for row in range(self.account_details_table.rowCount())]
-    #         )
-    #         # convert pandas dataframe to html
-    #         # print(df)
-    #         html = df.to_html(index=False, header=False)
-
-    #         # add heaqder and footer to html
-    #         html = """<html>
-    #         <body>
-    #         <style>
-
-    #             body {
-    #                 font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    #                 width: 100%;
-                    
-    #             }
-    #             table,
-    #             th,
-    #             td {
-    #                 border-bottom: 1px solid gray;
-    #                 border-collapse: collapse;
-    #                 width: 100%;
-    #             }
-    #             th,
-    #             td {
-    #                 padding: 10px 2px;
-    #                 text-align: left;
-    #             }
-    #             td:nth-child(7) {
-    #                 color: green;
-    #             }
-    #             td:nth-child(8) {
-    #                 color: red;
-    #             }
-    #             thead {
-    #                 background-color: #29b6f6;
-    #                 font-size: 20px;
-    #                 font-weight: 700;
-    #             }
-    #             tbody {
-    #                 font-size: 18px;
-    #                 font-weight: 600;
-    #                 width: 100%;
-    #             }
-    #         </style>
-    #         <h1 style="text-align: center;
-    #                 font-size: 30px;
-    #                 font-weight: 700;">Account Details</h1>
-    #         <h2 style="text-align: right;
-    #                 font-size: 18px;
-    #                 font-weight: 700;">Account Name: """+self.lbl_account_name.text()+"""</h2>
-    #         <h3 style="text-align: right;
-    #                 font-size: 15px;
-    #                 font-weight: 600;">Opening Balance: """+self.lbl_opening_balance.text()+"""</h3>
-    #         <h4 style="text-align: left;
-    #                 font-size: 10px;
-    #                 font-weight: 600;">Print Date: """+str(QDate.currentDate().toString('dd-MM-yyyy'))+"""</h4>
-    #         """+html+"""
-    #         </body>
-    #         </html>"""
-    #         # document.setHtml(html)
-    #         # document.print_(printer)
-    #         # pdf.from_string(html, 'accounts.pdf')
-    #         doc = QTextDocument()
-    #         doc.setHtml(html)
-    #         printer = QtPrintSupport.QPrinter()
-    #         printer.setOutputFileName(filename[0])
-    #         printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
-    #         printer.setPageSize(QtPrintSupport.QPrinter.A4)
-    #         printer.setPageMargins(
-    #             15, 15, 15, 15, QtPrintSupport.QPrinter.Millimeter)
-
-    #         doc.print_(printer)
-    #         print("done!")
-
-    #         # html = """<html>
-    #         # <head>
-    #         # <style>
-    #         #     body {
-    #         #         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    #         #     }
-    #         #     table,
-    #         #     th,
-    #         #     td {
-    #         #         border-bottom: 1px solid gray;
-    #         #         border-collapse: collapse;
-    #         #         width: 100%;
-    #         #     }
-    #         #     th,
-    #         #     td {
-    #         #         padding: 10px 2px;
-    #         #         text-align: left;
-    #         #     }
-    #         #     td:nth-child(7) {
-    #         #         color: green;
-    #         #     }
-    #         #     td:nth-child(8) {
-    #         #         color: red;
-    #         #     }
-    #         #     thead {
-    #         #         background-color: #29b6f6;
-    #         #         font-size: 20px;
-    #         #         font-weight: 700;
-    #         #     }
-    #         #     tbody {
-    #         #         font-size: 18px;
-    #         #         font-weight: 600;
-    #         #     }
-
-    #         # </style>
-
-    #         # </head>
-
-    #         # <body>
-    #         #     <div>
-    #         #         <h1>Business Name</h1>
-    #         #         <h2>Business Contact</h2>
-    #         #     </div>
-    #         #     <div>
-    #         #     <h1> - Accounts</h1>
-    #         #         <h2>Opening Balance</h2>
-    #         #     </div>
-    #         #     <table">
-    #         #         <thead>
-    #         #             <tr>
-    #         #                 <th>S/NO</th>
-    #         #                 <th>Date</th>
-    #         #                 <th>Refrence</th>
-    #         #                 <th>Description</th>
-    #         #                 <th>Cash In</th>
-    #         #                 <th>Cash Out</th>
-    #         #                 <th>Remaining</th>
-    #         #             </tr>
-    #         #         </thead>
-    #         #         <tbody>
-    #         # """
-    #         # for i in range(self.account_details_table.rowCount()):
-    #         #     html += "<tr>"
-    #         #     for j in range(self.account_details_table.columnCount()):
-    #         #         html += "<td>" + \
-    #         #             self.account_details_table.item(i, j).text()+"</td>"
-    #         #     html += "</tr>"
-    #         # html += """
-    #         #         </tbody>
-
-    #         #     </table>
-
-    #         # </body>
-    #         # </html>
-    #         # """
-    #         # document.setHtml(html)
-    #         # document.print_(printer)
-    #         QMessageBox.information(self, "Success", "PDF Saved Successfully")
-
     def search_table(self, id, search=None, type='all'):
         if type == 'all':
             data = self.db.conn.execute(
@@ -295,8 +123,10 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             ).fetchall()
         elif type == 'date':
             # print("date")
+            from_date=self.from_date.date().toString('dd/MM/yyyy')
+            to_date=self.to_date.date().toString('dd/MM/yyyy')
             data = self.db.conn.execute(
-                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date like '%{search}%'"
+                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date between '{from_date}' and '{to_date}'"
             ).fetchall()
             # print(data)
         else:

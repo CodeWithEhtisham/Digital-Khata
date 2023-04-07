@@ -25,7 +25,7 @@ class LoginWindow(QMainWindow, FORM_MAIN):
         self.txt_password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.show_password.toggled.connect(self.toggle_password_visibility)
         # REMOVE TITLE BAR
-        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        # self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
         
     def toggle_password_visibility(self, checked):
         if checked:
