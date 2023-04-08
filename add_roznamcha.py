@@ -112,14 +112,14 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
                 if cash_type=="Cash In":
                     self.db.insert(
                         table_name='roznamcha',
-                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_in,remaining,accounts_remaining,created_at",
-                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash In','{refrences}','{description}',{float(amount)},{float(remaing)},{float(accounts_remaining)},'{QDate.currentDate().toString('dd/MM/yyyy')}'"
+                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_in,remaining,accounts_remaining",
+                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash In','{refrences}','{description}',{float(amount)},{float(remaing)},{float(accounts_remaining)}"
                         )
                 else:
                     self.db.insert(
                         table_name='roznamcha',
-                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_out,remaining,accounts_remaining,created_at",
-                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash Out','{refrences}','{description}',{float(amount)},{float(remaing)},{float(accounts_remaining)},'{QDate.currentDate().toString('dd/MM/yyyy')}'"
+                        columns="khata_id,accounts_id,date,cash_type,refrences,description,cash_out,remaining,accounts_remaining",
+                        values=f"'{self.khata_id}','{acccount_id}','{date}','Cash Out','{refrences}','{description}',{float(amount)},{float(remaing)},{float(accounts_remaining)}"
                         )
 
                 # accounts_remaining=self.db.conn.execute(f"SELECT balance FROM accounts WHERE accounts_id={acccount_id}").fetchone()[0]

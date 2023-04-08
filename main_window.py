@@ -317,7 +317,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
             to_date = self.txt_date_to_RN.date().toString("dd/MM/yyyy")
             
             data = self.db.conn.execute(
-                f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}'").fetchall()
+                f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}' order by r.date").fetchall()
         else:
             self.update()
             return
@@ -371,10 +371,10 @@ class MainWindow(QMainWindow, FORM_MAIN):
             if last_id:
                 last_id = last_id[-1][0]
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.created_at = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}").fetchall()
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' and r.roznamcha_id > {last_id} Order by r.date").fetchall()
             else:
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.created_at = '{QDate.currentDate().toString('dd/MM/yyyy')}'").fetchall()
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' Order by r.date").fetchall()
 
             if data:
                 total_rem_balance = 0
