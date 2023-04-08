@@ -4,8 +4,8 @@
  <widget class="QMainWindow" name="AccountDetailsWindow">
   <property name="geometry">
    <rect>
-    <x>50</x>
-    <y>50</y>
+    <x>0</x>
+    <y>0</y>
     <width>1280</width>
     <height>700</height>
    </rect>
@@ -28,16 +28,16 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">* {
-	background-color: #e0f2f1;
+    <string notr="true">#widget {
+	background-color: #fff;
 }
-#header_frame {
+#header_frame, #bottom_widget {
 	background-color: #80cbc4;
 }
 
 #lbl_account_name {
 	background-color: #80cbc4;
-	color: #00bcd4;
+	color: blue;
 }
 
 #lbl_accounts {
@@ -93,8 +93,8 @@ QLineEdit {
         <widget class="QLabel" name="lbl_account_name">
          <property name="font">
           <font>
-           <family>Calibri</family>
-           <pointsize>22</pointsize>
+           <family>Verdana</family>
+           <pointsize>18</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -201,7 +201,7 @@ QLineEdit {
              <enum>QFrame::Raised</enum>
             </property>
             <property name="text">
-             <string>00</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -234,86 +234,133 @@ QLineEdit {
            <pointsize>14</pointsize>
           </font>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDateEdit" name="from_date">
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Calibri</family>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="dateTime">
-          <datetime>
-           <hour>0</hour>
-           <minute>0</minute>
-           <second>0</second>
-           <year>2022</year>
-           <month>1</month>
-           <day>1</day>
-          </datetime>
-         </property>
-         <property name="currentSection">
-          <enum>QDateTimeEdit::DaySection</enum>
-         </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
+         <property name="placeholderText">
+          <string>search here</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QDateEdit" name="to_date">
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>40</height>
-          </size>
+        <widget class="QFrame" name="frame_3">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>40</height>
-          </size>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
-         <property name="font">
-          <font>
-           <family>Calibri</family>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="dateTime">
-          <datetime>
-           <hour>0</hour>
-           <minute>0</minute>
-           <second>0</second>
-           <year>2022</year>
-           <month>1</month>
-           <day>1</day>
-          </datetime>
-         </property>
-         <property name="currentSection">
-          <enum>QDateTimeEdit::DaySection</enum>
-         </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
-         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="lbl_from">
+            <property name="font">
+             <font>
+              <family>Verdana</family>
+              <pointsize>13</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>From</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDateEdit" name="from_date">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Verdana</family>
+              <pointsize>14</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="dateTime">
+             <datetime>
+              <hour>0</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2022</year>
+              <month>1</month>
+              <day>1</day>
+             </datetime>
+            </property>
+            <property name="currentSection">
+             <enum>QDateTimeEdit::DaySection</enum>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_to">
+            <property name="font">
+             <font>
+              <family>Verdana</family>
+              <pointsize>13</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>To</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDateEdit" name="to_date">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Verdana</family>
+              <pointsize>14</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="dateTime">
+             <datetime>
+              <hour>0</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2022</year>
+              <month>1</month>
+              <day>1</day>
+             </datetime>
+            </property>
+            <property name="currentSection">
+             <enum>QDateTimeEdit::DaySection</enum>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -463,7 +510,7 @@ QLineEdit {
        <bool>true</bool>
       </property>
       <property name="rowCount">
-       <number>15</number>
+       <number>0</number>
       </property>
       <attribute name="horizontalHeaderVisible">
        <bool>true</bool>
@@ -504,21 +551,6 @@ QLineEdit {
       <attribute name="verticalHeaderStretchLastSection">
        <bool>false</bool>
       </attribute>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
-      <row/>
       <column>
        <property name="text">
         <string>S No.</string>
@@ -655,8 +687,8 @@ QLineEdit {
            <widget class="QLabel" name="label">
             <property name="font">
              <font>
-              <family>Calibri</family>
-              <pointsize>16</pointsize>
+              <family>Verdana</family>
+              <pointsize>14</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -670,8 +702,8 @@ QLineEdit {
            <widget class="QLabel" name="label_6">
             <property name="font">
              <font>
-              <family>Calibri</family>
-              <pointsize>16</pointsize>
+              <family>Verdana</family>
+              <pointsize>14</pointsize>
              </font>
             </property>
             <property name="text">
@@ -696,7 +728,7 @@ QLineEdit {
              <enum>QFrame::Raised</enum>
             </property>
             <property name="text">
-             <string>00</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -704,8 +736,8 @@ QLineEdit {
            <widget class="QLabel" name="label_5">
             <property name="font">
              <font>
-              <family>Calibri</family>
-              <pointsize>16</pointsize>
+              <family>Verdana</family>
+              <pointsize>14</pointsize>
              </font>
             </property>
             <property name="text">
@@ -730,7 +762,7 @@ QLineEdit {
              <enum>QFrame::Raised</enum>
             </property>
             <property name="text">
-             <string>00</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -738,8 +770,8 @@ QLineEdit {
            <widget class="QLabel" name="label_2">
             <property name="font">
              <font>
-              <family>Calibri</family>
-              <pointsize>16</pointsize>
+              <family>Verdana</family>
+              <pointsize>14</pointsize>
              </font>
             </property>
             <property name="text">
@@ -764,7 +796,7 @@ QLineEdit {
              <enum>QFrame::Raised</enum>
             </property>
             <property name="text">
-             <string>00</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -776,7 +808,6 @@ QLineEdit {
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
   <include location="../resources.qrc"/>
