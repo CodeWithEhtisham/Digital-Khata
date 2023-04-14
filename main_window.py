@@ -49,8 +49,8 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.roznamcha_table.setColumnWidth(5, 190)
         self.roznamcha_table.setColumnWidth(6, 160)
         self.roznamcha_table.setColumnWidth(7, 160)
-        
-        # 
+
+        #
         self.btn_change_business_details.hide()
 
     def Handle_Buttons(self):
@@ -87,7 +87,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.txt_search_RN.textChanged.connect(
             lambda: self.search_roznamcha(self.txt_search_RN.text()))
         self.btn_search_RN.clicked.connect(
-            lambda:self.search_roznamcha(self.txt_search_RN.text(), "date"))
+            lambda: self.search_roznamcha(self.txt_search_RN.text(), "date"))
         self.btn_refresh_RN.clicked.connect(self.update)
         self.btn_refresh_accounts.clicked.connect(self.update)
         self.txt_search.textChanged.connect(self.search_accounts)
@@ -108,7 +108,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.update_roznamcha.show()
         self.update_roznamcha.btn_update.clicked.connect(self.update)
         self.update_roznamcha.btn_clear.clicked.connect(self.update)
-    
+
     def print_accounts_table_pdf(self):
         filename = QFileDialog.getSaveFileName(
             self, "Save File", "", "PDF(*.pdf)")
@@ -273,7 +273,6 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.lbl_net_balance.setText(str(f"{int(receivable+payable):,}"))
             self.lbl_total_accounts.setText(str(len(data)))
 
-
             # self.accounts_table.item(
             #     index, 7).setForeground(QColor(255, 0, 0))
 
@@ -312,39 +311,17 @@ class MainWindow(QMainWindow, FORM_MAIN):
         if type == "all" and search != "":
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and a.name LIKE '%{search}%' or r.description LIKE '%{search}%' or r.refrences LIKE '%{search}%'").fetchall()
+
         elif type == "date":
             from_date = self.txt_date_from_RN.date().toString("dd/MM/yyyy")
             to_date = self.txt_date_to_RN.date().toString("dd/MM/yyyy")
-            
+
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}' order by r.date").fetchall()
         else:
             self.update()
             return
-        
-        total_rem_balance = 0
-        cash_in = 0
-        cash_out = 0
-        self.roznamcha_table.setRowCount(0)
-        for index, row in enumerate(data):
-            self.roznamcha_table.insertRow(index)
-            cash_in += row[6]
-            cash_out += row[7]
-            if index == len(data)-1:
-                total_rem_balance = row[8]
-            for idx, i in enumerate(row):
-                self.roznamcha_table.setItem(
-                    index, idx, QTableWidgetItem(str(i)))
-            self.roznamcha_table.item(
-                index, 6).setForeground(QColor(0, 255, 0))
-            self.roznamcha_table.item(
-                index, 7).setForeground(QColor(255, 0, 0))
-
-        self.lbl_total_cash_In.setText(str(f"{cash_in:,}"))
-        self.lbl_total_cash_out.setText(str(f"{cash_out:,}"))
-        self.lbl_total_rem_balance.setText(str(f"{total_rem_balance:,}"))
-        self.lbl_total_cash_In.setStyleSheet("color: green")
-        self.lbl_total_cash_out.setStyleSheet("color: red")
+        self.tabel_update_reznamcha(data=data)
 
     def update(self):
         data = self.db.select(table_name='business',
@@ -369,38 +346,55 @@ class MainWindow(QMainWindow, FORM_MAIN):
             last_id = self.db.conn.execute(
                 f"SELECT r.roznamcha_id FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{previous_day}'").fetchall()
             if last_id:
+                print("if")
                 last_id = last_id[-1][0]
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' and r.roznamcha_id > {last_id} Order by r.date").fetchall()
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}").fetchall()
             else:
+                print("else")
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' Order by r.date").fetchall()
-
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' ").fetchall()
+            print("udpate roznamcha",data)
             if data:
-                total_rem_balance = 0
-                cash_in = 0
-                cash_out = 0
-                self.roznamcha_table.setRowCount(0)
-                for index, row in enumerate(data):
-                    self.roznamcha_table.insertRow(index)
-                    cash_in += row[6]
-                    cash_out += row[7]
-                    if index == len(data)-1:
-                        total_rem_balance = row[8]
-                    for idx, i in enumerate(row):
-                        self.roznamcha_table.setItem(
-                            index, idx, QTableWidgetItem(str(i)))
-                    self.roznamcha_table.item(
-                        index, 6).setForeground(QColor(0, 255, 0))
-                    self.roznamcha_table.item(
-                        index, 7).setForeground(QColor(255, 0, 0))
-                self.lbl_total_cash_In.setText(str(f"{cash_in:,}"))
-                self.lbl_total_cash_out.setText(str(f"{cash_out:,}"))
-                self.lbl_total_rem_balance.setText(str(f"{total_rem_balance:,}"))
-                self.lbl_total_cash_In.setStyleSheet("color: green")
-                self.lbl_total_cash_out.setStyleSheet("color: red")
+                self.tabel_update_reznamcha(data=data)
             else:
                 self.roznamcha_table.setRowCount(0)
+
+    def tabel_update_reznamcha(self, data):
+        print(data)
+        total_rem_balance = 0
+        cash_in = 0
+        cash_out = 0
+        previous_amount = 0
+        self.roznamcha_table.setRowCount(0)
+        for index, row in enumerate(data):
+            self.roznamcha_table.insertRow(index)
+            cash_in += row[6]
+            cash_out += row[7]
+            if row[6] == 0:
+                previous_amount -= row[7]
+            else:
+                previous_amount += row[6]
+            if index == len(data)-1:
+                total_rem_balance = row[8]
+            for idx, i in enumerate(row):
+                if len(row) == idx+1:
+                    self.roznamcha_table.setItem(
+                        index, idx, QTableWidgetItem(str(previous_amount)))
+                else:
+                    self.roznamcha_table.setItem(
+                        index, idx, QTableWidgetItem(str(i)))
+                
+            self.roznamcha_table.item(
+                index, 6).setForeground(QColor(0, 255, 0))
+            self.roznamcha_table.item(
+                index, 7).setForeground(QColor(255, 0, 0))
+            
+        self.lbl_total_cash_In.setText(str(f"{cash_in:,}"))
+        self.lbl_total_cash_out.setText(str(f"{cash_out:,}"))
+        self.lbl_total_rem_balance.setText(str(f"{total_rem_balance:,}"))
+        self.lbl_total_cash_In.setStyleSheet("color: green")
+        self.lbl_total_cash_out.setStyleSheet("color: red")
 
     def account_details(self):
         # get selected row first cell

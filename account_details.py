@@ -119,19 +119,19 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
     def search_table(self, id, search=None, type='all'):
         if type == 'all':
             data = self.db.conn.execute(
-                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and (refrences like '%{search}%' or description like '%{search}%') "
+                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and (refrences like '%{search}%' or description like '%{search}%')  order by date asc"
             ).fetchall()
         elif type == 'date':
             # print("date")
             from_date=self.from_date.date().toString('dd/MM/yyyy')
             to_date=self.to_date.date().toString('dd/MM/yyyy')
             data = self.db.conn.execute(
-                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date between '{from_date}' and '{to_date}'"
+                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date between '{from_date}' and '{to_date}' order by date asc"
             ).fetchall()
             # print(data)
         else:
             data = self.db.conn.execute(
-                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id}"
+                f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
             ).fetchall()
         # print(len(data))
         # opening=0
@@ -139,15 +139,25 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         cash_in = 0
         cash_out = 0
         self.account_details_table.setRowCount(0)
+        previous_amount=0
         for row_number, row_data in enumerate(data):
             cash_in += row_data[4]
             cash_out += row_data[5]
+            if row_data[4] == 0: 
+                previous_amount -= row_data[5]
+            else:
+                previous_amount += row_data[4]
             if row_number == len(data)-1:
                 remaning = row_data[6]
             self.account_details_table.insertRow(row_number)
             for column_number, value in enumerate(row_data):
-                self.account_details_table.setItem(
-                    row_number, column_number, QTableWidgetItem(str(value)))
+                if len(row_data)==column_number+1:
+                    self.account_details_table.setItem(
+                        row_number, column_number, QTableWidgetItem(str(previous_amount)))
+                else:
+                    self.account_details_table.setItem(
+                        row_number, column_number, QTableWidgetItem(str(value)))
+                
             self.account_details_table.item(
                 row_number, 4).setForeground(QColor(0, 255, 0))
             self.account_details_table.item(
