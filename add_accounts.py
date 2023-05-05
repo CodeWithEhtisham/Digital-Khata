@@ -28,6 +28,7 @@ class AddAccountsWindow(QMainWindow, FORM_MAIN):
         self.btn_clear.clicked.connect(self.clear_fields)
         self.btn_cancel.clicked.connect(self.close)
         self.txt_balance.textChanged.connect(self.add_comma_separator)
+        
     
     def add_comma_separator(self):
         balance = self.txt_balance.text()

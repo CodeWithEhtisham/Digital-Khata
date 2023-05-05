@@ -45,6 +45,8 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         # self.to_date.dateChanged.connect(lambda: self.search_table(
         #     self.account_id, self.to_date.text(), 'date'))
         self.btn_print.clicked.connect(self.print_accounts_table_pdf)
+        self.select_range_details.currentTextChanged.connect(
+            lambda: self.search_table(self.account_id, self.select_range_details.currentText(), 'range'))
     
     def print_accounts_table_pdf(self):
         filename = QFileDialog.getSaveFileName(
@@ -129,6 +131,18 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
                 f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date between '{from_date}' and '{to_date}' order by date asc"
             ).fetchall()
             # print(data)
+        elif type == 'range':
+            last_number_of_record = self.select_range_details.currentText()
+            # get last 10 records
+            if last_number_of_record == 'All':
+                data = self.db.conn.execute(
+                    f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
+                ).fetchall()
+            else:
+                data = self.db.conn.execute(
+                    f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc "
+                    ).fetchall()[-int(last_number_of_record):]
+            
         else:
             data = self.db.conn.execute(
                 f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
@@ -147,8 +161,11 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
                 previous_amount -= row_data[5]
             else:
                 previous_amount += row_data[4]
-            if row_number == len(data)-1:
-                remaning = row_data[6]
+            # if row_number == len(data)-1:
+            remaning += row_data[4]
+            remaning -= row_data[5]
+            # print(remaning)
+            # print(row_data)
             self.account_details_table.insertRow(row_number)
             for column_number, value in enumerate(row_data):
                 if len(row_data)==column_number+1:
@@ -166,10 +183,10 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         self.lbl_total_cash_In.setText(str(f"{int(cash_in):,}"))
         self.lbl_total_cash_out.setText(str(f"{int(cash_out):,}"))
         opening = self.opening
-        if opening >= 0:
-            self.lbl_remaining.setText(str(float(opening)+float(remaning)))
-        else:
-            self.lbl_remaining.setText(str(float(opening)-float(remaning)))
+        # if opening >= 0:
+        self.lbl_remaining.setText(str(float(opening)+float(remaning)))
+        # else:
+        #     self.lbl_remaining.setText(str(float(opening)+float(remaning)))
 
         if cash_in < 0:
             self.lbl_total_cash_In.setStyleSheet("color: red")

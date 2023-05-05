@@ -88,6 +88,8 @@ class MainWindow(QMainWindow, FORM_MAIN):
             lambda: self.search_roznamcha(self.txt_search_RN.text()))
         self.btn_search_RN.clicked.connect(
             lambda: self.search_roznamcha(self.txt_search_RN.text(), "date"))
+        self.select_range_roznamcha.currentTextChanged.connect(
+            lambda: self.search_roznamcha(self.txt_search_RN.text(), "range"))
         self.btn_refresh_RN.clicked.connect(self.update)
         self.btn_refresh_accounts.clicked.connect(self.update)
         self.txt_search.textChanged.connect(self.search_accounts)
@@ -318,6 +320,14 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}' order by r.date").fetchall()
+        elif type == "range":
+            last_number_of_rows = self.select_range_roznamcha.currentText()
+            if last_number_of_rows == "All":
+                self.update()
+                return
+            else:
+                data = self.db.conn.execute(
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} order by r.date").fetchall()[-int(last_number_of_rows):]
         else:
             self.update()
             return
@@ -346,22 +356,22 @@ class MainWindow(QMainWindow, FORM_MAIN):
             last_id = self.db.conn.execute(
                 f"SELECT r.roznamcha_id FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{previous_day}'").fetchall()
             if last_id:
-                print("if")
+                # print("if")
                 last_id = last_id[-1][0]
                 data = self.db.conn.execute(
                     f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}").fetchall()
             else:
-                print("else")
+                # print("else")
                 data = self.db.conn.execute(
                     f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' ").fetchall()
-            print("udpate roznamcha",data)
+            # print("udpate roznamcha",data)
             if data:
                 self.tabel_update_reznamcha(data=data)
             else:
                 self.roznamcha_table.setRowCount(0)
 
     def tabel_update_reznamcha(self, data):
-        print(data)
+        # print(data)
         total_rem_balance = 0
         cash_in = 0
         cash_out = 0
@@ -375,8 +385,11 @@ class MainWindow(QMainWindow, FORM_MAIN):
                 previous_amount -= row[7]
             else:
                 previous_amount += row[6]
-            if index == len(data)-1:
-                total_rem_balance = row[8]
+            # if index == len(data)-1:
+            total_rem_balance += row[6]
+            total_rem_balance -= row[7]
+
+            print(row)
             for idx, i in enumerate(row):
                 if len(row) == idx+1:
                     self.roznamcha_table.setItem(
