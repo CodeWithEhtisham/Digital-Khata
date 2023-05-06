@@ -359,11 +359,11 @@ class MainWindow(QMainWindow, FORM_MAIN):
                 # print("if")
                 last_id = last_id[-1][0]
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}").fetchall()
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}").fetchall()[-10:]
             else:
                 # print("else")
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' ").fetchall()
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' ").fetchall()[-10:]
             # print("udpate roznamcha",data)
             if data:
                 self.tabel_update_reznamcha(data=data)
@@ -389,7 +389,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
             total_rem_balance += row[6]
             total_rem_balance -= row[7]
 
-            print(row)
+            # print(row)
             for idx, i in enumerate(row):
                 if len(row) == idx+1:
                     self.roznamcha_table.setItem(
