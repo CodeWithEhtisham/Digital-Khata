@@ -137,7 +137,7 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             if last_number_of_record == 'All':
                 data = self.db.conn.execute(
                     f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
-                ).fetchall()[-10:]
+                ).fetchall()
             else:
                 data = self.db.conn.execute(
                     f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc "
