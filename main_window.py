@@ -52,6 +52,11 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
         #
         self.btn_change_business_details.hide()
+        
+        # 
+        roznomcha_scrollBar = self.roznamcha_table.verticalScrollBar()
+        roznomcha_scrollBar.rangeChanged.connect(
+            lambda: roznomcha_scrollBar.setValue(roznomcha_scrollBar.maximum()))
 
     def Handle_Buttons(self):
         self.btn_home.clicked.connect(self.home)
@@ -88,8 +93,8 @@ class MainWindow(QMainWindow, FORM_MAIN):
             lambda: self.search_roznamcha(self.txt_search_RN.text()))
         self.btn_search_RN.clicked.connect(
             lambda: self.search_roznamcha(self.txt_search_RN.text(), "date"))
-        self.select_range_roznamcha.currentTextChanged.connect(
-            lambda: self.search_roznamcha(self.txt_search_RN.text(), "range"))
+        # self.select_range_roznamcha.currentTextChanged.connect(
+        #     lambda: self.search_roznamcha(self.txt_search_RN.text(), "range"))
         self.btn_refresh_RN.clicked.connect(self.update)
         self.btn_refresh_accounts.clicked.connect(self.update)
         self.txt_search.textChanged.connect(self.search_accounts)
@@ -320,14 +325,15 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}' order by r.date").fetchall()
-        elif type == "range":
-            last_number_of_rows = self.select_range_roznamcha.currentText()
-            if last_number_of_rows == "All":
-                data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} order by r.date").fetchall()
-            else:
-                data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} order by r.date").fetchall()[-int(last_number_of_rows):]
+        # elif type == "range":
+        #     last_number_of_rows = self.select_range_roznamcha.currentText()
+        #     if last_number_of_rows == "All":
+        #         data = self.db.conn.execute(
+        #             f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} order by r.date").fetchall()
+        #     else:
+        #         data = self.db.conn.execute(
+        #             f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} order by r.date").fetchall()[-int(last_number_of_rows):]
+        
         else:
             self.update()
             return
@@ -359,11 +365,11 @@ class MainWindow(QMainWindow, FORM_MAIN):
                 # print("if")
                 last_id = last_id[-1][0]
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}").fetchall()[-10:]
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' or r.roznamcha_id = {last_id}").fetchall()
             else:
                 # print("else")
                 data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' ").fetchall()[-10:]
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' ").fetchall()
             # print("udpate roznamcha",data)
             if data:
                 self.tabel_update_reznamcha(data=data)

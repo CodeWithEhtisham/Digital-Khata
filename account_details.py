@@ -38,6 +38,11 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         self.account_details_table.setColumnWidth(2, 200)
         self.account_details_table.setColumnWidth(3, 200)
         self.account_details_table.setColumnWidth(6, 100)
+        
+        accounts_scrollBar = self.account_details_table.verticalScrollBar()
+        accounts_scrollBar.rangeChanged.connect(
+            lambda: accounts_scrollBar.setValue(accounts_scrollBar.maximum()))
+
         self.txt_search.textChanged.connect(
             lambda: self.search_table(self.account_id, self.txt_search.text()))
         self.btn_search.clicked.connect(lambda: self.search_table(
@@ -45,8 +50,8 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         # self.to_date.dateChanged.connect(lambda: self.search_table(
         #     self.account_id, self.to_date.text(), 'date'))
         self.btn_print.clicked.connect(self.print_accounts_table_pdf)
-        self.select_range_details.currentTextChanged.connect(
-            lambda: self.search_table(self.account_id, self.select_range_details.currentText(), 'range'))
+        # self.select_range_details.currentTextChanged.connect(
+        #     lambda: self.search_table(self.account_id, self.select_range_details.currentText(), 'range'))
     
     def print_accounts_table_pdf(self):
         filename = QFileDialog.getSaveFileName(
@@ -131,22 +136,22 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
                 f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date between '{from_date}' and '{to_date}' order by date asc"
             ).fetchall()
             # print(data)
-        elif type == 'range':
-            last_number_of_record = self.select_range_details.currentText()
-            # get last 10 records
-            if last_number_of_record == 'All':
-                data = self.db.conn.execute(
-                    f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
-                ).fetchall()
-            else:
-                data = self.db.conn.execute(
-                    f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc "
-                    ).fetchall()[-int(last_number_of_record):]
+        # elif type == 'range':
+        #     last_number_of_record = self.select_range_details.currentText()
+        #     # get last 10 records
+        #     if last_number_of_record == 'All':
+        #         data = self.db.conn.execute(
+        #             f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
+        #         ).fetchall()
+        #     else:
+        #         data = self.db.conn.execute(
+        #             f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc "
+        #             ).fetchall()[-int(last_number_of_record):]
             
         else:
             data = self.db.conn.execute(
                 f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
-            ).fetchall()[-10:]
+            ).fetchall()
         # print(len(data))
         # opening=0
         remaning = 0
