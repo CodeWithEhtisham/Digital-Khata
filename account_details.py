@@ -47,11 +47,7 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             lambda: self.search_table(self.account_id, self.txt_search.text()))
         self.btn_search.clicked.connect(lambda: self.search_table(
             self.account_id, self.from_date.text(), 'date'))
-        # self.to_date.dateChanged.connect(lambda: self.search_table(
-        #     self.account_id, self.to_date.text(), 'date'))
         self.btn_print.clicked.connect(self.print_accounts_table_pdf)
-        # self.select_range_details.currentTextChanged.connect(
-        #     lambda: self.search_table(self.account_id, self.select_range_details.currentText(), 'range'))
     
     def print_accounts_table_pdf(self):
         filename = QFileDialog.getSaveFileName(
@@ -135,42 +131,35 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             data = self.db.conn.execute(
                 f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date between '{from_date}' and '{to_date}' order by date asc"
             ).fetchall()
-            # print(data)
-        # elif type == 'range':
-        #     last_number_of_record = self.select_range_details.currentText()
-        #     # get last 10 records
-        #     if last_number_of_record == 'All':
-        #         data = self.db.conn.execute(
-        #             f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
-        #         ).fetchall()
-        #     else:
-        #         data = self.db.conn.execute(
-        #             f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc "
-        #             ).fetchall()[-int(last_number_of_record):]
+            record = self.db.conn.execute(
+                    f"SELECT SUM(cash_in),SUM(cash_out) FROM roznamcha WHERE accounts_id={id} and date < '{from_date}' order by date").fetchone()
+            print(record)
+            if record[0]:
+                record =[("","","","previous",'0','0',record[0]-record[1])]
+                data = record + data
             
         else:
             data = self.db.conn.execute(
                 f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} order by date asc"
             ).fetchall()
-        # print(len(data))
-        # opening=0
+        
         remaning = 0
         cash_in = 0
         cash_out = 0
         self.account_details_table.setRowCount(0)
         previous_amount=0
         for row_number, row_data in enumerate(data):
-            cash_in += row_data[4]
-            cash_out += row_data[5]
-            if row_data[4] == 0: 
-                previous_amount -= row_data[5]
+            if row_data[3]=="previous":
+                previous_amount=row_data[-1]
             else:
-                previous_amount += row_data[4]
-            # if row_number == len(data)-1:
-            remaning += row_data[4]
-            remaning -= row_data[5]
-            # print(remaning)
-            # print(row_data)
+                cash_in += row_data[4]
+                cash_out += row_data[5]
+                if row_data[4] == 0: 
+                    previous_amount -= row_data[5]
+                else:
+                    previous_amount += row_data[4]
+                remaning += row_data[4]
+                remaning -= row_data[5]
             self.account_details_table.insertRow(row_number)
             for column_number, value in enumerate(row_data):
                 if len(row_data)==column_number+1:
@@ -184,15 +173,10 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
                 row_number, 4).setForeground(QColor(0, 255, 0))
             self.account_details_table.item(
                 row_number, 5).setForeground(QColor(255, 0, 0))
-        # self.lbl_opening_balance.setText(str(opening))
         self.lbl_total_cash_In.setText(str(f"{int(cash_in):,}"))
         self.lbl_total_cash_out.setText(str(f"{int(cash_out):,}"))
         opening = self.opening
-        # if opening >= 0:
-        self.lbl_remaining.setText(str(float(opening)+float(remaning)))
-        # else:
-        #     self.lbl_remaining.setText(str(float(opening)+float(remaning)))
-
+        self.lbl_remaining.setText(str(float(opening)+float(previous_amount)))
         if cash_in < 0:
             self.lbl_total_cash_In.setStyleSheet("color: red")
         else:
@@ -206,12 +190,6 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
         else:
             self.lbl_remaining.setStyleSheet("color: green")
 
-    # def update(self,id):
-    #     data= self.db.conn.execute(
-    #         f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,remaining from roznamcha where accounts_id = {id}"
-    #     ).fetchall()
-    #     # print(len(data))
-    #     if data:
 
 
 def main():

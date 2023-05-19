@@ -410,47 +410,7 @@ QLineEdit {
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item>
-           <widget class="QComboBox" name="select_range_details">
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Verdana</family>
-              <pointsize>13</pointsize>
-             </font>
-            </property>
-            <item>
-             <property name="text">
-              <string>10</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>25</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>50</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>100</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>All</string>
-             </property>
-            </item>
-           </widget>
-          </item>
+          
           <item>
            <widget class="QPushButton" name="btn_print">
             <property name="minimumSize">
