@@ -256,7 +256,10 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.accounts_table.setRowCount(0)
             for index, row in enumerate(data):
                 self.accounts_table.insertRow(index)
+                advanced_payment=row[4]
+                print(advanced_payment)
                 for idx, i in enumerate(row):
+                    
                     if idx == 4 and i > 0:
                         payable += i
                     elif idx == 4 and i < 0:
@@ -265,7 +268,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
                         accounts_last_balance = self.db.conn.execute(
                             f"SELECT accounts_remaining FROM roznamcha WHERE accounts_id={row[0]} ORDER BY roznamcha_id DESC LIMIT 1").fetchone()
                         if accounts_last_balance:
-                            i = accounts_last_balance[0]
+                            i = accounts_last_balance[0]+row[4]
                             if i >= 0:
                                 payable += i
                             else:
