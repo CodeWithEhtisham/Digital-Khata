@@ -33,13 +33,15 @@ class RozNamchaWindow(QMainWindow, FORM_MAIN):
 
     def add_comma_separator(self):
         amount = self.txt_amount.text()
-        if amount != '':
-            amount = amount.replace(',', '')
-            amount = int(amount)
-            amount = "{:,}".format(amount)
-            self.txt_amount.setText(amount)
-            self.txt_amount.setCursorPosition(len(amount))
-        
+        try:
+            if amount != '':
+                amount = amount.replace(',', '')
+                amount = int(amount)
+                amount = "{:,}".format(amount)
+                self.txt_amount.setText(amount)
+                self.txt_amount.setCursorPosition(len(amount))
+        except Exception as e:
+            QMessageBox.warning(self, "Error", "Please Re-Enter Valid Entry")
 
     def clear_fields(self):
         self.txt_date.setDate(QDate.currentDate())

@@ -100,13 +100,17 @@ class MainWindow(QMainWindow, FORM_MAIN):
         self.txt_search.textChanged.connect(self.search_accounts)
 
     def update_account(self):
-        id = self.accounts_table.item(
-            self.accounts_table.currentRow(), 0).text()
-        self.window_update = UpdateAccountsWindow(id)
-        self.window_update.show()
-        self.window_update.btn_save.clicked.connect(self.update)
-        # self.window = AccountDetailsWindow(id, name)
-        # self.window.show()
+        # Check if there is a selected item in the table
+        if self.accounts_table.currentItem() is not None:
+            id = self.accounts_table.item(
+                self.accounts_table.currentRow(), 0).text()
+            self.window_update = UpdateAccountsWindow(id)
+            self.window_update.show()
+            self.window_update.btn_save.clicked.connect(self.update)
+        else:
+            QMessageBox.warning(
+                self, "warning", "Please Select Account")
+
 
     def roznamcha_update(self):
         row_id = self.roznamcha_table.currentRow()
