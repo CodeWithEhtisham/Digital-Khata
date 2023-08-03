@@ -20,6 +20,7 @@ from update_accounts import UpdateAccountsWindow
 # from cash_paid import CashPaidWindow
 from PyQt5.uic import loadUiType
 from resources_rc import *
+from datetime import datetime
 
 FORM_MAIN, _ = loadUiType('ui/main_window.ui')
 
@@ -260,8 +261,6 @@ class MainWindow(QMainWindow, FORM_MAIN):
             self.accounts_table.setRowCount(0)
             for index, row in enumerate(data):
                 self.accounts_table.insertRow(index)
-                advanced_payment=row[4]
-                print(advanced_payment)
                 for idx, i in enumerate(row):
                     
                     if idx == 4 and i > 0:
@@ -313,24 +312,28 @@ class MainWindow(QMainWindow, FORM_MAIN):
         else:
             self.accounts_table.setRowCount(0)
 
-    def search_roznamcha(self, search, type="all"):
-        if type == "all" and search != "":
+    def search_roznamcha(self, search, types="all"):
+        if types == "all" and search != "":
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and a.name LIKE '%{search}%' or r.description LIKE '%{search}%' or r.refrences LIKE '%{search}%'").fetchall()
 
-        elif type == "date":
-            from_date = self.txt_date_from_RN.date().toString("dd/MM/yyyy")
-            to_date = self.txt_date_to_RN.date().toString("dd/MM/yyyy")
-
+        elif types == "date":
+            from_date = self.txt_date_from_RN.date().toString("yyyy-MM-dd")
+            to_date = self.txt_date_to_RN.date().toString("yyyy-MM-dd")
+            print(type(from_date), to_date)
+            # print(from_date)
             data = self.db.conn.execute(
                 f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date BETWEEN '{from_date}' and '{to_date}' order by r.date").fetchall()
-
+            
             record = self.db.conn.execute(
                     f"SELECT SUM(r.cash_in),SUM(r.cash_out) FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date < '{from_date}' order by r.date").fetchone()
-            print(record)
+            # print(record)
             if record[0]:
                 record =[("","","previous","","","",'0','0',record[0]-record[1])]
                 data = record + data
+
+            for row in data:
+                print(row[1])
         else:
             self.update()
             return
@@ -355,9 +358,9 @@ class MainWindow(QMainWindow, FORM_MAIN):
 
         # roznamcha table
         if self.khata_options.currentText() != "Select Business":
-            today = QDate.currentDate().toString('dd/MM/yyyy')
+            today = QDate.currentDate().toString("yyyy-MM-dd")
             data = self.db.conn.execute(
-                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('dd/MM/yyyy')}' ").fetchall()
+                    f"SELECT r.roznamcha_id,r.date,r.cash_type,a.name,r.refrences,r.description,r.cash_in,r.cash_out,r.remaining FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date = '{QDate.currentDate().toString('yyyy-MM-dd')}' ").fetchall()
             record = self.db.conn.execute(
                     f"SELECT SUM(r.cash_in),SUM(r.cash_out) FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.khata_id={self.get_khata_id(self.khata_options.currentText())} and r.date < '{today}' order by r.date").fetchone()
             if record[0]:
