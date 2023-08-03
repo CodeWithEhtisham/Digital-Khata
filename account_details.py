@@ -126,8 +126,8 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             ).fetchall()
         elif type == 'date':
             # print("date")
-            from_date=self.from_date.date().toString('dd/MM/yyyy')
-            to_date=self.to_date.date().toString('dd/MM/yyyy')
+            from_date=self.from_date.date().toString('yyyy-MM-dd')
+            to_date=self.to_date.date().toString('yyyy-MM-dd')
             data = self.db.conn.execute(
                 f"SELECT roznamcha_id,date,refrences,description,cash_in,cash_out,accounts_remaining from roznamcha where accounts_id = {id} and date between '{from_date}' and '{to_date}' order by date asc"
             ).fetchall()
