@@ -29,7 +29,7 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
     def fill_fields(self):
         data=self.db.conn.execute(f"SELECT r.date, r.cash_type, a.name, r.refrences, r.description, r.cash_in,r.cash_out FROM roznamcha r INNER JOIN accounts a ON r.accounts_id=a.accounts_id WHERE r.roznamcha_id={self.roznamcha_id}").fetchone()
         print(data)
-        self.txt_date.setDate(QDate.fromString(data[0],'dd/MM/yyyy'))
+        self.txt_date.setDate(QDate.fromString(data[0],'yyyy-MM-dd'))
         # self.cashInOut_option.addItems([data[1]])
         if data[1] == 'Cash In':
             self.cashInOut_option.setCurrentIndex(0)
@@ -86,7 +86,7 @@ class UpdateRozNamchaWindow(QMainWindow, FORM_MAIN):
                 account_previous_balance = 0
             else:
                 account_previous_balance = float(account_previous_balance[0])
-            date=self.txt_date.date().toString('dd/MM/yyyy')
+            date=self.txt_date.date().toString('yyyy-MM-dd')
             cash_type=self.cashInOut_option.currentText()
             refrences=self.txt_reference.text()
             description=self.txt_description.text()
