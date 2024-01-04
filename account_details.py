@@ -154,7 +154,7 @@ class AccountDetailsWindow(QMainWindow, FORM_MAIN):
             else:
                 cash_in += row_data[4]
                 cash_out += row_data[5]
-                if row_data[4] == 0: 
+                if row_data[4] == 0:
                     previous_amount -= row_data[5]
                 else:
                     previous_amount += row_data[4]

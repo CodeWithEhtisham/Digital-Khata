@@ -262,16 +262,18 @@ class MainWindow(QMainWindow, FORM_MAIN):
             for index, row in enumerate(data):
                 self.accounts_table.insertRow(index)
                 for idx, i in enumerate(row):
-                    
-                    if idx == 4 and i > 0:
-                        payable += i
-                    elif idx == 4 and i < 0:
-                        receivable += i
+                    # if idx == 4 and i > 0:
+                    #     payable += i
+                    #     print(payable)
+                    # elif idx == 4 and i < 0:
+                    #     receivable += i
                     if idx == len(row)-1:
+                        print(row[0])
                         accounts_last_balance = self.db.conn.execute(
                             f"SELECT accounts_remaining FROM roznamcha WHERE accounts_id={row[0]} ORDER BY roznamcha_id DESC LIMIT 1").fetchone()
                         if accounts_last_balance:
                             i = accounts_last_balance[0]+row[4]
+                            print("update",i)
                             if i >= 0:
                                 payable += i
                             else:
@@ -280,7 +282,7 @@ class MainWindow(QMainWindow, FORM_MAIN):
                         i = f"{int(i):,}"
                     self.accounts_table.setItem(
                         index, idx, QTableWidgetItem(str(i)))
-
+            # print(payable, receivable)
             self.lbl_total_receivable.setText(str(f"{int(receivable):,}"))
             self.lbl_total_payable.setText(str(f"{int(payable):,}"))
             self.lbl_net_balance.setText(str(f"{int(receivable+payable):,}"))
